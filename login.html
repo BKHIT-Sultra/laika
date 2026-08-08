@@ -147,8 +147,11 @@
       btn.style.opacity = '0.7';
 
       try {
-        // Panggil fetchGasAPI (method POST otomatis karena ada payload)
-        const result = await fetchGasAPI('cekLogin', { username: username, password: password });
+        // Perhatikan, payload kita bungkus dengan jelas
+        const result = await fetchGasAPI('cekLogin', { 
+            username: username.trim(), 
+            password: password.trim() 
+        });
 
         if (result.status === 'success') {
           // Simpan sesi login di Local Storage
