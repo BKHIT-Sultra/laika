@@ -4,7 +4,7 @@
 
 // 1. GANTI URL DI BAWAH INI DENGAN URL WEB APP APPS SCRIPT ANDA
 // Pastikan URL berakhiran /exec
-const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxBMyTB7yK2CKDibU4eLmmML-grNpnLLhJ1K_MaUVqXbn-auvVcwbcOIV3IQUpvA4Qb/exec";
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbx1Bgg2NdvMFRzvdbGbC6cVIRT4DQXUmODUKoWhNjClFY5_dk5Frb3ZVwn_MoidASGU/exec";
 
 // 2. FUNGSI HELPER UNTUK MENGIRIM DAN MENERIMA DATA
 async function fetchGasAPI(action, payload = null) {
