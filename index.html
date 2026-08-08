@@ -9,6 +9,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Panggil Config API GAS -->
+    <script src="js/config.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -477,8 +479,8 @@
         <div class="header-right">
             <!-- Tambahkan onclick & preventDefault di sini agar mulus -->
             <a href="#" class="nav-btn" onclick="event.preventDefault(); openLaikaModal();">Beranda</a>
-            <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Profil" target="_top" class="nav-btn profil-btn"><i class="fas fa-user"></i> Profil</a>
-            <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Login" target="_top" class="nav-btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="#" onclick="alert('Profil sedang dikembangkan'); event.preventDefault();" target="_top" class="nav-btn profil-btn"><i class="fas fa-user"></i> Profil</a>
+            <a href="login.html" target="_top" class="nav-btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
         </div>
     </header>
 
@@ -560,14 +562,14 @@
                 <div class="service-icon-wrapper icon-color-blue"><i class="fas fa-chart-line"></i></div>
                 <h3>Monitoring Oprasional</h3>
                 <p>Data monitoring layanan oprasional BKHIT Sulawesi Tenggara.</p>
-                <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Monitoring" target="_top" class="btn-outline btn-blue">Lihat Layanan <i class="fas fa-arrow-right"></i></a>
+                <a href="monitoring.html" target="_top" class="btn-outline btn-blue">Lihat Layanan <i class="fas fa-arrow-right"></i></a>
             </div>
 
             <div class="service-card">
                 <div class="service-icon-wrapper icon-color-green"><i class="fas fa-bullhorn"></i></div>
                 <h3>Informasi & Publikasi</h3>
                 <p>Berita, pengumuman, regulasi, dan publikasi.</p>
-                <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Publikasi" target="_top" class="btn-outline btn-green">Lihat Layanan <i class="fas fa-arrow-right"></i></a>
+                <a href="publikasi.html" target="_top" class="btn-outline btn-green">Lihat Layanan <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
@@ -671,19 +673,19 @@
             </div>
             <div class="publik-modal-body">
                 <div class="publik-sub-grid">
-                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=SurveyIKM" target="_blank" class="publik-sub-card">
+                    <a href="survey-ikm.html" target="_blank" class="publik-sub-card">
                         <div class="publik-sub-icon sub-icon-blue"><i class="fas fa-star"></i></div>
                         <span class="publik-sub-text">Indeks Kepuasan Masyarakat (IKM)</span>
                     </a>
-                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=PPIDA" target="_blank" class="publik-sub-card">
+                    <a href="ppid-a.html" target="_blank" class="publik-sub-card">
                         <div class="publik-sub-icon sub-icon-red"><i class="fas fa-file-contract"></i></div>
                         <span class="publik-sub-text">PPID FORM A<br>(Badan Hukum/Publik/Kelompok)</span>
                     </a>
-                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=PPID_B" target="_blank" class="publik-sub-card">
+                    <a href="ppid-b.html" target="_blank" class="publik-sub-card">
                         <div class="publik-sub-icon sub-icon-purple"><i class="fas fa-file-signature"></i></div>
                         <span class="publik-sub-text">PPID FORM B<br>(Perorangan)</span>
                     </a>
-                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Aduan" target="_blank" class="publik-sub-card">
+                    <a href="aduan.html" target="_blank" class="publik-sub-card">
                         <div class="publik-sub-icon sub-icon-orange"><i class="fas fa-bullhorn"></i></div>
                         <span class="publik-sub-text">Layanan Aduan</span>
                     </a>
@@ -836,7 +838,8 @@
         // --- PENCARIAN GLOBAL (DENGAN LOADING & SPINNER) ---
         // ==========================================================
 
-        function performGlobalSearch() {
+        // Tambahkan kata 'async' di depan function
+        async function performGlobalSearch() {
             const input = document.getElementById('searchInput');
             const query = input.value.trim();
 
@@ -854,22 +857,27 @@
             spinner.style.display = 'inline-block';
             btn.disabled = true;
 
-            google.script.run
-                .withSuccessHandler(function(result) {
-                    showLoading(false);
-                    icon.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    btn.disabled = false;
-                    handleSearchResult(result);
-                })
-                .withFailureHandler(function(error) {
-                    showLoading(false);
-                    icon.style.display = 'inline-block';
-                    spinner.style.display = 'none';
-                    btn.disabled = false;
-                    handleSearchError(error);
-                })
-                .searchGlobal(query);
+            // --- MULAI PERUBAHAN FETCH API ---
+            try {
+                // Panggil API kita yang ada di config.js
+                const result = await fetchGasAPI('searchGlobal', { query: query });
+                
+                showLoading(false);
+                icon.style.display = 'inline-block';
+                spinner.style.display = 'none';
+                btn.disabled = false;
+                
+                handleSearchResult(result);
+
+            } catch (error) {
+                showLoading(false);
+                icon.style.display = 'inline-block';
+                spinner.style.display = 'none';
+                btn.disabled = false;
+                
+                handleSearchError(error);
+            }
+            // --- AKHIR PERUBAHAN ---
         }
 
         function handleSearchResult(result) {
