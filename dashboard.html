@@ -2216,24 +2216,20 @@
                 const loginTimestamp = localStorage.getItem('laika_login_timestamp');
                 
                 if (!isLoggedIn || isLoggedIn !== 'true' || !loginTimestamp) {
-                    handleLogoutLocal(); return;
+                    handleLogoutLocal(); 
+                    return;
                 }
-    
+        
                 const ts = parseInt(loginTimestamp, 10);
-                if (isNaN(ts) || Date.now() - ts > (60 * 60 * 1000)) { // 1 Jam batas sesi
-                    handleLogoutLocal(); return;
+                if (isNaN(ts) || Date.now() - ts > (60 * 60 * 1000)) {
+                    handleLogoutLocal(); 
+                    return;
                 }
-    
-                const username = localStorage.getItem('laika_username'); 
-                if (username) {
-                    // Di sistem baru, kita gunakan data localStorage agar cepat
-                    document.querySelector('.user-name-text').textContent = "Admin";
-                    document.querySelector('.user-dropdown-header strong').textContent = "Admin";
-                }
-    
+        
+                // Jalankan switchView setelah dipastikan aman
                 switchView('dashboard');
             } catch (error) {
-                handleLogoutLocal();
+                console.error("Error saat init:", error);
             }
         });
     
