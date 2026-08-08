@@ -2575,29 +2575,22 @@
             btn.style.opacity = '0.8';
         
             try {
+                // ✅ Panggil Web App dengan format action & payload
                 const res = await fetchGasAPI('updateUserProfile', { 
                     username: username, 
                     data: { nama, email, jabatan, wilayah, telepon } 
                 });
         
                 if (res.status === 'success') {
-                    // 1. Update UI
+                    // Update UI
                     document.querySelector('.user-name-text').textContent = nama;
                     document.querySelector('.user-dropdown-header strong').textContent = nama;
                     document.querySelector('.user-dropdown-header span').textContent = wilayah;
         
-                    // 2. ✅ UPDATE LOCALSTORAGE (INI PENTING!)
-                    const userData = {
-                        nama: nama,
-                        username: username,
-                        email: email,
-                        jabatan: jabatan,
-                        wilayah: wilayah,
-                        telepon: telepon
-                    };
+                    // Update localStorage
+                    const userData = { nama, username, email, jabatan, wilayah, telepon };
                     localStorage.setItem('laika_user_data', JSON.stringify(userData));
         
-                    // 3. Update tombol
                     btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
                     btn.style.background = '#4CAF50';
                     setTimeout(() => {
