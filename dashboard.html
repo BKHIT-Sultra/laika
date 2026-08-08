@@ -2246,31 +2246,75 @@
             handleLogoutLocal();
         }
     
-        // --- FUNGSI NAVIGASI ---
+        // --- FUNGSI NAVIGASI YANG DIPERBAIKI ---
         function switchView(viewName) {
+            // Sembunyikan semua view section
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            // Hilangkan kelas active di semua menu
             document.querySelectorAll('.nav-item').forEach(m => m.classList.remove('active'));
+            
+            // Tampilkan view yang dituju
             const target = document.getElementById('view-' + viewName);
-            if (target) target.classList.add('active');
-            const menu = document.getElementById('menu-' + viewName);
-            if (menu) menu.classList.add('active');
-            else {
-                const parent = document.querySelector(`.dropdown-item[onclick="switchView('${viewName}')"]`);
-                if (parent) parent.closest('.nav-item').classList.add('active');
+            if (target) {
+                target.classList.add('active');
             }
+            
+            // Aktifkan menu yang sesuai
+            const menu = document.getElementById('menu-' + viewName);
+            if (menu) {
+                menu.classList.add('active');
+            } else {
+                // Jika itu menu dropdown (seperti ppid, aduan, ikm di dalam Layanan Publik)
+                const dropdownItem = document.querySelector(`.dropdown-item[onclick*="${viewName}"]`);
+                if (dropdownItem) {
+                    dropdownItem.closest('.nav-item').classList.add('active');
+                }
+            }
+        
+            // Panggil fungsi data loader sesuai menu yang dibuka
             if (viewName === 'dashboard') {
                 loadStatistik();
                 loadStatistikSDM();
                 loadGrafikStatistik();
                 loadAktivitasTerakhir();
                 loadIKMSummaryOnly();
+            } else if (viewName === 'regulasi') {
+                loadRegulasi();
+            } else if (viewName === 'ppid') {
+                loadPPID();
+            } else if (viewName === 'aduan') {
+                loadAduan();
+            } else if (viewName === 'ikm') {
+                loadIKM();
+            } else if (viewName === 'sdm') {
+                sdmLoadKegiatan();
             }
-            if (viewName === 'regulasi') loadRegulasi();
-            if (viewName === 'ppid') loadPPID();
-            if (viewName === 'aduan') loadAduan();
-            if (viewName === 'ikm') loadIKM();
-            if (viewName === 'sdm') sdmLoadKegiatan();
         }
+        
+        // --- FUNGSI DROPDOWN PROFIL ADMIN DI KANAN ATAS ---
+        function toggleUserMenu(e) { 
+            e.stopPropagation(); 
+            const dropdown = document.getElementById('userDropdown');
+            const chevron = document.getElementById('userChevron');
+            if(dropdown) {
+                dropdown.classList.toggle('show');
+                if(chevron) {
+                    chevron.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            }
+        }
+        
+        // Tutup dropdown jika klik di luar area profil
+        window.onclick = e => { 
+            if (!e.target.closest('.user-menu-container')) { 
+                const dropdown = document.getElementById('userDropdown');
+                const chevron = document.getElementById('userChevron');
+                if (dropdown && dropdown.classList.contains('show')) { 
+                    dropdown.classList.remove('show'); 
+                    if(chevron) chevron.style.transform = 'rotate(0deg)'; 
+                } 
+            } 
+        };
     
         // ==========================================
         // DOWNLOAD DATA
