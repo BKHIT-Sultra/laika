@@ -116,7 +116,7 @@
             
             if (!isNaN(ts) && (Date.now() - ts <= ONE_HOUR)) {
                 // PENGGANTIAN LINK REDIRECT KE DASHBOARD
-                window.location.replace("dashboard.html");
+                window.location.replace("./dashboard.html");
                 return;
             }
         }
@@ -160,7 +160,7 @@
           localStorage.setItem('laika_login_timestamp', Date.now().toString());
 
           // PENGGANTIAN LINK REDIRECT SETELAH LOGIN SUKSES
-          window.location.replace("dashboard.html");
+          window.location.replace("./dashboard.html");
         } else {
           // Username/password salah (dapat dari backend)
           btn.innerHTML = originalText;
