@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Laika BKHIP Sulawesi Tenggara</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- MENGHUBUNGKAN CONFIG API -->
+  <script src="js/config.js"></script>
+
+  <style>
+    /* ... (Semua CSS biarkan sama persis seperti aslinya) ... */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body {
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; background-color: #f0f4f9; color: #1c1c1e;
+      background: url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover;
+      background-size: cover; position: relative; overflow: hidden;
+    }
+    body::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 0;
+    }
+    a { text-decoration: none; color: inherit; }
+    .auth-wrapper {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; position: relative; z-index: 2; width: 100%; max-width: 420px; margin: 20px;
+      opacity: 0; visibility: hidden; 
+    }
+    .back-home-btn {
+      background: #ffffff; border: 1px solid #e0e0e0; padding: 8px 24px; border-radius: 50px;
+      font-weight: 600; font-size: 14px; color: #000000; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.3s; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .back-home-btn:hover { background: #f8f9fa; transform: translateY(-2px); }
+    .login-wrapper {
+      width: 100%; background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 32px; padding: 40px 35px; box-shadow: 0 30px 60px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .login-logo { max-width: 160px; height: auto; margin: 0 auto 20px auto; display: block; }
+    .login-title { font-size: 22px; font-weight: 700; color: #1a2d5c; margin-bottom: 5px; }
+    .login-subtitle { font-size: 14px; font-weight: 400; color: #6e6e73; margin-bottom: 30px; }
+    .input-group { margin-bottom: 20px; text-align: left; }
+    .input-group label { display: block; font-size: 13px; font-weight: 600; color: #1a2d5c; margin-bottom: 6px; }
+    .input-wrapper { display: flex; align-items: center; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 16px; padding: 0 16px; transition: all 0.3s ease; }
+    .input-wrapper:focus-within { background: #fff; border-color: #6C5CE7; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.15); }
+    .input-wrapper i { color: #6C5CE7; font-size: 16px; width: 24px; margin-right: 10px; text-align: center; }
+    .input-wrapper input { border: none; outline: none; background: transparent; padding: 14px 0; width: 100%; font-size: 15px; color: #333; }
+    .input-wrapper input::placeholder { color: #999; font-weight: 400; }
+    .login-btn { width: 100%; padding: 14px; border: none; border-radius: 30px; background: linear-gradient(135deg, #6C5CE7 0%, #2196F3 50%, #4CAF50 100%); color: #fff; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2); margin-top: 10px; }
+    .login-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4); }
+    .login-footer-links { display: flex; justify-content: space-between; margin-top: 18px; font-size: 13px; font-weight: 500; }
+    .login-footer-links a { transition: opacity 0.2s; }
+    .login-footer-links a:hover { opacity: 0.7; text-decoration: underline; }
+    .link-blue { color: #147cb8; }
+    .link-green { color: #61bb32; }
+    @media (max-width: 480px) {
+      .login-wrapper { padding: 30px 20px; }
+      .auth-wrapper { gap: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <!-- PENGGANTIAN LINK KEMBALI KE BERANDA -->
+    <a href="index.html" class="back-home-btn">
+      <i class="fas fa-home"></i> Beranda
+    </a>
+    
+    <div class="login-wrapper" id="loginWrapper">
+      <img src="https://drive.google.com/thumbnail?id=1fVEkfGBApqLHstqCHkI91-FyuKTVtuXd&sz=w1000" alt="Laika Logo" class="login-logo">
+      <h2 class="login-title">Selamat Datang</h2>
+      <p class="login-subtitle">Masuk ke Portal Dashboard Layanan Karantina</p>
+      
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <label>Email / Username</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="text" id="loginUsername" placeholder="Masukkan username" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Kata Sandi</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="loginPassword" placeholder="Masukkan kata sandi" required>
+          </div>
+        </div>
+        <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        <div class="login-footer-links">
+          <a href="#" class="link-blue">Lupa Password?</a>
+          <a href="#" class="link-green">Hubungi Admin</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Cek sesi login
+        const isLoggedIn = localStorage.getItem('laika_logged_in');
+        const loginTimestamp = localStorage.getItem('laika_login_timestamp');
+        
+        if (isLoggedIn === 'true' && loginTimestamp) {
+            const ts = parseInt(loginTimestamp, 10);
+            const ONE_HOUR = 60 * 60 * 1000;
+            
+            if (!isNaN(ts) && (Date.now() - ts <= ONE_HOUR)) {
+                // PENGGANTIAN LINK REDIRECT KE DASHBOARD
+                window.location.replace("dashboard.html");
+                return;
+            }
+        }
+
+        // Bersihkan sisa data lama
+        localStorage.clear();
+        
+        // Tampilkan form
+        const authContainer = document.querySelector('.auth-wrapper');
+        authContainer.style.visibility = 'visible';
+        
+        // Animasi GSAP
+        gsap.fromTo(".auth-wrapper", 
+            { y: 30, opacity: 0 }, 
+            { duration: 1.2, y: 0, opacity: 1, ease: "power4.out" }
+        );
+    });
+
+    // MENGUBAH FUNGSI LOGIN MENGGUNAKAN FETCH API
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.querySelector('.login-btn');
+      const originalText = btn.innerHTML;
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+      btn.style.opacity = '0.7';
+
+      try {
+        // Panggil fetchGasAPI (method POST otomatis karena ada payload)
+        const result = await fetchGasAPI('cekLogin', { username: username, password: password });
+
+        if (result.status === 'success') {
+          // Simpan sesi login di Local Storage
+          localStorage.setItem('laika_username', username);
+          localStorage.setItem('laika_logged_in', 'true');
+          localStorage.setItem('laika_login_timestamp', Date.now().toString());
+
+          // PENGGANTIAN LINK REDIRECT SETELAH LOGIN SUKSES
+          window.location.replace("dashboard.html");
+        } else {
+          // Username/password salah (dapat dari backend)
+          btn.innerHTML = originalText;
+          btn.style.opacity = '1';
+          alert(result.message || 'Username atau password salah!');
+        }
+
+      } catch (error) {
+        // Jika ada kesalahan jaringan (gagal fetch)
+        btn.innerHTML = originalText;
+        btn.style.opacity = '1';
+        alert('Gagal terhubung ke server: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
