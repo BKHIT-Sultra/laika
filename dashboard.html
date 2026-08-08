@@ -1419,6 +1419,18 @@
         let ikmCurrentPage = 1;
     
         let hapusTimestampTemp = null;
+
+        // ============================================================
+        // FUNGSI KOMUNIKASI DENGAN GOOGLE APPS SCRIPT (GAS)
+        // ============================================================
+        async function fetchGasAPI(funcName, payload = {}) {
+            return new Promise((resolve, reject) => {
+                google.script.run
+                    .withSuccessHandler(resolve)
+                    .withFailureHandler(reject)
+                    [funcName](payload);
+            });
+        }
     
         // --- CEK SESSION SAAT MUAT HALAMAN ---
         document.addEventListener('DOMContentLoaded', async function() {
