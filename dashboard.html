@@ -2562,27 +2562,58 @@
     
         async function handleEditProfile(e) {
             e.preventDefault();
-            const nama = document.getElementById('editNama').value; const email = document.getElementById('editEmail').value;
-            const jabatan = document.getElementById('editJabatan').value; const wilayah = document.getElementById('editWilayah').value;
+            const nama = document.getElementById('editNama').value;
+            const email = document.getElementById('editEmail').value;
+            const jabatan = document.getElementById('editJabatan').value;
+            const wilayah = document.getElementById('editWilayah').value;
             const telepon = document.getElementById('editTelepon').value;
-            const username = localStorage.getItem('laika_username'); 
-    
-            const btn = e.target.querySelector('.btn-submit'); const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...'; btn.style.opacity = '0.8';
-    
+            const username = localStorage.getItem('laika_username');
+        
+            const btn = e.target.querySelector('.btn-submit');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            btn.style.opacity = '0.8';
+        
             try {
-                const res = await fetchGasAPI('updateUserProfile', { username: username, data: { nama, email, jabatan, wilayah, telepon } });
-                if(res.status === 'success') {
+                const res = await fetchGasAPI('updateUserProfile', { 
+                    username: username, 
+                    data: { nama, email, jabatan, wilayah, telepon } 
+                });
+        
+                if (res.status === 'success') {
+                    // 1. Update UI
                     document.querySelector('.user-name-text').textContent = nama;
                     document.querySelector('.user-dropdown-header strong').textContent = nama;
                     document.querySelector('.user-dropdown-header span').textContent = wilayah;
-    
-                    btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!'; btn.style.background = '#4CAF50';
-                    setTimeout(() => { closeModal('modalEditProfile'); btn.innerHTML = originalText; btn.style.background = ''; btn.style.opacity = '1'; }, 1200);
-                } else throw new Error(res.message);
-            } catch(err) {
+        
+                    // 2. ✅ UPDATE LOCALSTORAGE (INI PENTING!)
+                    const userData = {
+                        nama: nama,
+                        username: username,
+                        email: email,
+                        jabatan: jabatan,
+                        wilayah: wilayah,
+                        telepon: telepon
+                    };
+                    localStorage.setItem('laika_user_data', JSON.stringify(userData));
+        
+                    // 3. Update tombol
+                    btn.innerHTML = '<i class="fas fa-check"></i> Tersimpan!';
+                    btn.style.background = '#4CAF50';
+                    setTimeout(() => {
+                        closeModal('modalEditProfile');
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                        btn.style.opacity = '1';
+                    }, 1200);
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (err) {
                 alert('Gagal menyimpan perubahan: ' + err.message);
-                btn.innerHTML = originalText; btn.style.background = ''; btn.style.opacity = '1';
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                btn.style.opacity = '1';
             }
         }
     
