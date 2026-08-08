@@ -3,22 +3,1205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laika BKHIT Sulawesi Tenggara</title>
-    <!-- Halaman ini otomatis mengalihkan ke aplikasi utama -->
-    <meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbwRixEKYXIXvmc3wmnuL_1SBYI0E5hqeIkAna6q6mfK7sgnDUth6NOA2jltY5gAuU0j/exec">
+    <title>Laika - BKHIP Sulawesi Tenggara</title>
+    <!-- GSAP & Plugins & Google Fonts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f4f9; text-align: center; }
-        .loader { border: 8px solid #f3f3f3; border-top: 8px solid #6C5CE7; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: #f0f4f9;
+            color: #1c1c1e;
+            overflow-y: auto; 
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- HEADER TRANSPARAN --- */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 40px; position: absolute; top: 0; left: 0; width: 100%;
+            background: transparent; z-index: 20;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .header-logo-img { height: 50px; width: auto; display: block; object-fit: contain; }
+        
+        .header-logo-img-right {
+            height: 50px;
+            width: auto;
+            display: block;
+            object-fit: contain;
+        }
+        
+        .header-long-title {
+            display: flex; flex-direction: column; font-size: 14px; font-weight: 600; color: #1a2d5c; line-height: 1.3;
+        }
+        .header-long-title .title-line-1 { font-weight: 600; }
+        .header-long-title .title-line-2 { font-weight: 700; color: #1a2d5c; }
+
+        /* --- HEADER KANAN --- */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a2d5c;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .nav-btn:hover { 
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.login-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn.login-btn i {
+            font-size: 16px;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative; min-height: 60vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; padding: 30px 20px 70px 20px;
+            background: url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover;
+            background-color: #f0f4f9;
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 35%, rgba(255,255,255,0) 60%);
+            z-index: 1;
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 1200px; width: 100%; }
+
+        .logo-image-container { width: 100%; display: flex; justify-content: center; margin-bottom: 15px; }
+        .logo-image { max-width: 30%; max-height: 20vh; height: auto; display: block; }
+
+        /* --- SEARCH BAR --- */
+        .search-container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            padding: 4px 4px 4px 16px;
+            border-radius: 60px; display: flex; align-items: center;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+        .search-container:focus-within { 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); transform: scale(1.01); 
+            border-color: rgba(100, 78, 197, 0.3);
+        }
+        .search-container i { color: #1a2d5c; font-size: 16px; }
+        .search-container input {
+            border: none; outline: none; padding: 8px 12px;
+            flex-grow: 1; font-size: 14px;
+            color: #333; background: transparent;
+        }
+        .search-container button {
+            background: #644ec5; color: #ffffff !important; border: none;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            cursor: pointer; font-size: 14px; transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(100, 78, 197, 0.3); display: flex; justify-content: center; align-items: center;
+        }
+        .search-container button:hover { transform: scale(1.05); box-shadow: 0 8px 15px rgba(100, 78, 197, 0.4); background: #4b3a9f; }
+
+        /* --- MINI ICONS --- */
+        .mini-icons { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 5px; }
+        .mini-item { display: flex; align-items: center; gap: 12px; color: #1a2d5c; }
+        .icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; }
+        .icon-hewan { background: #644ec5; } .icon-ikan { background: #147cb8; } .icon-tumbuhan { background: #61bb32; }
+        .mini-text { display: flex; flex-direction: column; text-align: left; }
+        .mini-text strong { display: block; font-size: 13px; margin-bottom: 2px; color: #1a2d5c; }
+        .mini-text span { font-size: 11px; font-weight: 400; color: #444; line-height: 1.3; }
+
+        /* --- SERVICE CARDS (DISESUAIKAN DENGAN GAMBAR) --- */
+        .services { 
+            width: 100%; 
+            max-width: 1440px; /* Batasi lebar area agar tidak melar di layar besar */
+            padding: 0 40px; 
+            margin: -60px auto 50px auto; 
+            position: relative; 
+            z-index: 5; 
+        }
+        
+        .services-grid { 
+            display: grid; 
+            grid-template-columns: repeat(6, 1fr); 
+            gap: 24px; /* Perbesar jarak antar card */
+            justify-items: center; /* Posisikan tiap card di tengah kolomnya */
+        }
+
+        .service-card {
+            position: relative;
+            background: #ffffff; /* Putih solid seperti gambar */
+            border-radius: 24px;
+            padding: 45px 15px 25px 15px; 
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04); /* Bayangan halus */
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            margin-top: 36px;
+            width: 100%;
+            max-width: 200px; /* KUNCI UTAMA: Batasi lebar card agar ramping */
+            min-height: 280px; /* KUNCI UTAMA: Jaga agar tinggi seragam */
+            border: none;
+        }
+
+        .service-card:hover { 
+            transform: translateY(-15px) !important; /* Tambahkan !important di sini */
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.15); 
+        }
+
+        /* Lingkaran Ikon (Lebih pas ukurannya) */
+        .service-icon-wrapper {
+            position: absolute; 
+            top: -30px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            background: #ffffff; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+            font-size: 24px; 
+            transition: all 0.4s ease;
+        }
+
+        .service-card:hover .service-icon-wrapper { 
+            transform: translate(-50%, -8px) scale(1.15) rotate(-10deg) !important; /* Tambahkan !important di sini juga */
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+
+        /* Penyesuaian Font dan Teks */
+        .service-card h3 {
+            font-size: 14px; 
+            font-weight: 700; 
+            color: #1a2d5c;
+            margin-bottom: 10px; 
+            line-height: 1.4; 
+            margin-top: 5px;
+        }
+        
+        .service-card p {
+            font-size: 11px; 
+            font-weight: 400; 
+            color: #555;
+            margin-bottom: 20px; 
+            line-height: 1.5; 
+            flex-grow: 1; /* Mendorong tombol otomatis ke bagian paling bawah */
+        }
+
+        /* Tombol Outline (Bentuk lonjong kecil) */
+        .service-card .btn-outline {
+            font-weight: 500; 
+            font-size: 11px;
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px;
+            padding: 6px 14px; 
+            border-radius: 20px;
+            background: transparent; 
+            border: 1px solid #d1d5db; /* Outline abu-abu tipis */
+            color: #111;
+            transition: all 0.3s ease; 
+            cursor: pointer; 
+            text-decoration: none;
+            margin-top: auto; 
+        }
+        
+        .service-card .btn-outline:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Tambahan sedikit bayangan agar manis */
+        }
+
+        /* --- MENGEMBALIKAN WARNA TOMBOL SAAT DI-HOVER --- */
+        .service-card .btn-purple:hover { 
+            background: #6C5CE7; 
+            color: #fff; 
+            border-color: #6C5CE7; 
+        }
+        .service-card .btn-blue:hover { 
+            background: #2196F3; 
+            color: #fff; 
+            border-color: #2196F3; 
+        }
+        .service-card .btn-green:hover { 
+            background: #4CAF50; 
+            color: #fff; 
+            border-color: #4CAF50; 
+        }
+
+        /* Warna Ikon */
+        .icon-color-purple { color: #6C5CE7; }
+        .icon-color-blue { color: #2196F3; }
+        .icon-color-green { color: #4CAF50; }
+
+        .service-card h3 {
+            font-size: 16px; font-weight: 700; color: #1a2d5c;
+            margin-bottom: 12px; line-height: 1.3; margin-top: 8px;
+        }
+        .service-card p {
+            font-size: 13px; font-weight: 400; color: #5e5e63;
+            margin-bottom: 22px; line-height: 1.6; flex-grow: 1;
+        }
+
+        .service-card .btn-outline {
+            font-weight: 600; font-size: 12px;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 18px; border-radius: 30px;
+            background: transparent; border: 1.5px solid #d1d5db;
+            transition: all 0.3s ease; cursor: pointer; text-decoration: none;
+        }
+        .service-card .btn-outline:hover { transform: translateY(-2px); border-color: transparent; }
+
+        .btn-purple:hover { background: #6C5CE7; color: #fff; border-color: #6C5CE7; }
+        .btn-blue:hover { background: #2196F3; color: #fff; border-color: #2196F3; }
+        .btn-green:hover { background: #4CAF50; color: #fff; border-color: #4CAF50; }
+        .btn-orange:hover { background: #FF9800; color: #fff; border-color: #FF9800; }
+
+        /* --- MODAL OVERLAY --- */
+        .modal-overlay, .ptk-modal-overlay, .publik-modal-overlay, .perkarantinaan-modal-overlay, .internal-modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 9999; 
+            justify-content: center; align-items: center; opacity: 0; transition: all 0.3s ease; 
+            visibility: hidden;
+        }
+        
+        .modal-overlay.active, .ptk-modal-overlay.active, .publik-modal-overlay.active, .perkarantinaan-modal-overlay.active, .internal-modal-overlay.active { 
+            display: flex !important; 
+            opacity: 1 !important; 
+            visibility: visible !important; 
+        }
+        
+        .modal-box, .ptk-modal-box, .publik-modal-box, .perkarantinaan-modal-box, .internal-modal-box {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.8); max-width: 750px; width: 95%; border-radius: 24px; box-shadow: 0 30px 80px rgba(0,0,0,0.15); padding: 0;
+            transform: translateY(20px) scale(0.95); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden;
+        }
+        
+        .modal-overlay.active .modal-box, .ptk-modal-overlay.active .ptk-modal-box, 
+        .publik-modal-overlay.active .publik-modal-box, .perkarantinaan-modal-overlay.active .perkarantinaan-modal-box, .internal-modal-overlay.active .internal-modal-box { transform: translateY(0) scale(1); }
+
+        .modal-title, .ptk-modal-header, .publik-modal-header, .perkarantinaan-modal-header, .internal-modal-header { 
+            padding: 24px 28px; border-bottom: 1px solid rgba(0, 0, 0, 0.05); font-size: 20px; font-weight: 700; color: #1a2d5c; display: flex; justify-content: space-between; align-items: center; 
+        }
+
+        .modal-title i, .ptk-modal-header i, .publik-modal-header i, .perkarantinaan-modal-header i, .internal-modal-header i {
+            cursor: pointer; color: #999; transition: 0.2s; font-size: 24px; padding: 5px;
+        }
+        .modal-title i:hover, .ptk-modal-header i:hover, .publik-modal-header i:hover, .perkarantinaan-modal-header i:hover, .internal-modal-header i:hover {
+            color: #d32f2f; transform: rotate(90deg);
+        }
+
+        .modal-desc, .ptk-modal-body, .publik-modal-body, .perkarantinaan-modal-body, .internal-modal-body { padding: 24px 28px; }
+        .modal-desc { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 10px; }
+
+        /* --- GRID SUB-MENU --- */
+        .ptk-sub-grid, .publik-sub-grid, .perkarantinaan-sub-grid, .internal-sub-grid { display: grid; gap: 16px; }
+        .ptk-sub-grid { grid-template-columns: repeat(3, 1fr); } .publik-sub-grid { grid-template-columns: repeat(2, 1fr); } .perkarantinaan-sub-grid { grid-template-columns: repeat(3, 1fr); } .internal-sub-grid { grid-template-columns: repeat(2, 1fr); }
+        .ptk-sub-card, .publik-sub-card, .perkarantinaan-sub-card, .internal-sub-card {
+            background: rgba(249, 250, 251, 0.8); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 18px; padding: 20px 12px; text-align: center; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); display: flex; flex-direction: column; align-items: center; text-decoration: none;
+        }
+        .ptk-sub-card:hover, .publik-sub-card:hover, .perkarantinaan-sub-card:hover, .internal-sub-card:hover { transform: translateY(-4px); background: #ffffff; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .ptk-sub-icon, .publik-sub-icon, .perkarantinaan-sub-icon, .internal-sub-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; font-size: 18px; transition: transform 0.3s ease; }
+        .ptk-sub-card:hover .ptk-sub-icon, .publik-sub-card:hover .publik-sub-icon, .perkarantinaan-sub-card:hover .perkarantinaan-sub-icon, .internal-sub-card:hover .internal-sub-icon { transform: scale(1.1); }
+        .ptk-sub-text, .publik-sub-text, .perkarantinaan-sub-text, .internal-sub-text { font-size: 14px; font-weight: 600; color: #1a2d5c; line-height: 1.2; }
+        
+        .sub-icon-blue { background: #deebff; color: #0047b3; } .sub-icon-red { background: #ffebeb; color: #c80000; } .sub-icon-purple { background: #f3e8ff; color: #5e3b8c; } .sub-icon-orange { background: #fff5e6; color: #cc6a00; } .sub-icon-green { background: #e3fcef; color: #006b42; } .sub-icon-teal { background: #e6fffa; color: #00857a; }
+        .rotating-icon { display: inline-block; transition: transform 0.3s ease; }
+        .internal-sub-card:hover .rotating-icon { animation: spinLoop 1.5s linear infinite; }
+        @keyframes spinLoop { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- FOOTER --- */
+        footer { 
+            width: 100%; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; line-height: 1; color: #1a2d5c; font-weight: 500; border-top: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; 
+        }
+        footer i { color: #644ec5; margin-right: 5px; }
+
+        /* --- SIDEBAR MEDIA SOSIAL --- */
+        .social-sidebar {
+            position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 12px; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8); padding: 18px 14px; border-radius: 28px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08); z-index: 50; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .social-sidebar:hover { background: rgba(255, 255, 255, 0.8); box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15); }
+        .social-sidebar a { color: #1a2d5c; font-size: 18px; padding: 10px; border-radius: 16px; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; width: 42px; height: 42px; text-decoration: none; }
+        .social-sidebar a:hover { background: #1a2d5c; color: #fff; transform: scale(1.1) translateX(-3px); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .services-grid { grid-template-columns: repeat(3, 1fr); } .logo-image { max-width: 40%; max-height: 10vh; }
+            .services { margin: -80px auto 40px auto; padding: 0 20px; }
+        }
+        @media (max-width: 768px) {
+            header { flex-direction: column; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); position: sticky; padding: 12px 20px; gap: 12px; }
+            .header-left { flex-wrap: wrap; justify-content: center; gap: 15px; } .header-logo-img, .header-logo-img-right { height: 40px; } .header-long-title { font-size: 13px; text-align: center; }
+            .header-right { flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+            .hero { padding: 60px 20px 60px 20px; min-height: auto; }
+            .mini-icons { gap: 20px; flex-direction: column; } .mini-item { flex-direction: row; }
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
+            footer { flex-direction: column; gap: 10px; text-align: center; padding: 15px 20px 80px 20px; margin-top: 20px; }
+            .logo-image { max-width: 60%; }
+            .social-sidebar { top: auto; bottom: 20px; right: 20px; transform: none; flex-direction: row; padding: 12px 16px; border-radius: 30px; gap: 10px; }
+            .social-sidebar a { width: 38px; height: 38px; font-size: 16px; }
+            .social-sidebar a:hover { transform: scale(1.1) translateY(-3px); }
+        }
+        @media (max-width: 600px) {
+            .ptk-sub-grid, .perkarantinaan-sub-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } .publik-sub-grid, .internal-sub-grid { grid-template-columns: 1fr; gap: 12px; }
+            .modal-desc, .ptk-modal-body, .publik-modal-body, .perkarantinaan-modal-body, .internal-modal-body { padding: 16px; }
+            .ptk-sub-text, .publik-sub-text, .perkarantinaan-sub-text, .internal-sub-text { font-size: 12px; }
+        }
+        @media (max-width: 480px) {
+            .services-grid { grid-template-columns: 1fr; }
+            .logo-image { max-width: 80%; }
+        }
+
+        /* --- LOADING OVERLAY (SAAT PENCARIAN) --- */
+        .search-loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 9998;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .search-loading-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .search-loading-overlay .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #644ec5;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .search-loading-overlay .loader-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a2d5c;
+            letter-spacing: 0.5px;
+        }
+        .search-loading-overlay .loader-text i {
+            color: #644ec5;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- TOAST NOTIFICATION --- */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1a2d5c;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            pointer-events: none;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast-notification i {
+            margin-right: 10px;
+        }
+        .toast-notification.info { background: #1a2d5c; }
+        .toast-notification.success { background: #4CAF50; }
+        .toast-notification.warning { background: #FF9800; }
+        .toast-notification.error { background: #d32f2f; }
     </style>
 </head>
 <body>
-    <div>
-        <h2 style="color: #1a2d5c;">Laika BKHIT Sulawesi Tenggara</h2>
-        <p>Sedang mengalihkan ke aplikasi utama...</p>
-        <div class="loader"></div>
-        <!-- PERBAIKAN: Ganti href di bawah ini dengan URL baru yang sama persis -->
-        <p style="font-size: 13px; color: #86868b;">Jika tidak dialihkan secara otomatis, <a href="https://script.google.com/macros/s/AKfycbwRixEKYXIXvmc3wmnuL_1SBYI0E5hqeIkAna6q6mfK7sgnDUth6NOA2jltY5gAuU0j/exec" style="color:#6C5CE7;">klik di sini</a></p>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <img src="https://drive.google.com/thumbnail?id=1u7vpxKfSMoAWEJzb5IEPVGuR3CHEBaWb&sz=s0" alt="Logo BKHIT" class="header-logo-img">
+            <div class="header-long-title">
+                <span class="title-line-1">Balai Karantina Hewan, Ikan dan Tumbuhan</span>
+                <span class="title-line-2">Sulawesi Tenggara</span>
+            </div>
+            <img src="https://drive.google.com/thumbnail?id=1e8Ma5eJdHOJnJKERNkURpwpjdA_gcNsb&sz=w1000" alt="Logo BKHIP" class="header-logo-img-right">
+        </div>
+
+        <div class="header-right">
+            <!-- Tambahkan onclick & preventDefault di sini agar mulus -->
+            <a href="#" class="nav-btn" onclick="event.preventDefault(); openLaikaModal();">Beranda</a>
+            <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Profil" target="_top" class="nav-btn profil-btn"><i class="fas fa-user"></i> Profil</a>
+            <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Login" target="_top" class="nav-btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="logo-image-container">
+                <img src="https://drive.google.com/thumbnail?id=1fVEkfGBApqLHstqCHkI91-FyuKTVtuXd&sz=w1000" alt="Laika Logo" class="logo-image">
+            </div>
+
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Contoh: Media Pembawa Karantina ...">
+                <button onclick="performGlobalSearch()" id="searchButton">
+                    <i class="fas fa-arrow-right" id="searchIcon"></i>
+                    <i class="fas fa-spinner fa-spin" id="searchSpinner" style="display:none;"></i>
+                </button>
+            </div>
+
+            <div class="mini-icons">
+                <div class="mini-item">
+                    <div class="icon-circle icon-hewan"><i class="fas fa-cow"></i></div>
+                    <div class="mini-text">
+                        <strong>Karantina Hewan</strong>
+                        <span>Melindungi Hewan dan<br>Produk dari HPHK</span>
+                    </div>
+                </div>
+                <div class="mini-item">
+                    <div class="icon-circle icon-ikan"><i class="fas fa-fish"></i></div>
+                    <div class="mini-text">
+                        <strong>Karantina Ikan</strong>
+                        <span>Melindungi Ikan dan<br>Produk dari HPIK</span>
+                    </div>
+                </div>
+                <div class="mini-item">
+                    <div class="icon-circle icon-tumbuhan"><i class="fas fa-leaf"></i></div>
+                    <div class="mini-text">
+                        <strong>Karantina Tumbuhan</strong>
+                        <span>Melindungi Tumbuhan dan<br>Produk dari OPTK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICE CARDS -->
+    <section class="services" id="servicesSection">
+        <div class="services-grid">
+            
+            <div class="service-card">
+                <div class="service-icon-wrapper icon-color-purple"><i class="fas fa-file-signature"></i></div>
+                <h3>Permohonan Tindakan Karantina (PTK)</h3>
+                <p>Akses layanan registrasi, pengajuan, dan tutorial PTK.</p>
+                <button class="btn-outline btn-purple" onclick="event.preventDefault(); openPTKModal();">Lihat Layanan <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon-wrapper icon-color-blue"><i class="fas fa-people-group"></i></div>
+                <h3>Layanan Publik</h3>
+                <p>Layanan pengaduan, permohonan informasi publik, dan survei kepuasan masyarakat.</p>
+                <button class="btn-outline btn-blue" onclick="event.preventDefault(); openPublikModal();">Lihat Layanan <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon-wrapper icon-color-green"><i class="fas fa-box"></i></div>
+                <h3>Layanan Perkarantinaan</h3>
+                <p>Layanan Instalasi Karantina Hewan, Ikan, Tumbuhan, GACC, Phyto-Requirement, dan Prior Notice.</p>
+                <button class="btn-outline btn-green" onclick="event.preventDefault(); openPerkarantinaanModal();">Lihat Layanan <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon-wrapper icon-color-purple"><i class="fas fa-server"></i></div>
+                <h3>Portal Layanan Internal</h3>
+                <p>Akses Sistem Penyimpanan Dokumen ISO dan Sistem Pemantauan OPTK.</p>
+                <button class="btn-outline btn-purple" onclick="event.preventDefault(); openInternalModal();">Lihat Layanan <i class="fas fa-arrow-right"></i></button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon-wrapper icon-color-blue"><i class="fas fa-chart-line"></i></div>
+                <h3>Monitoring Oprasional</h3>
+                <p>Data monitoring layanan oprasional BKHIT Sulawesi Tenggara.</p>
+                <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Monitoring" target="_top" class="btn-outline btn-blue">Lihat Layanan <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon-wrapper icon-color-green"><i class="fas fa-bullhorn"></i></div>
+                <h3>Informasi & Publikasi</h3>
+                <p>Berita, pengumuman, regulasi, dan publikasi.</p>
+                <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Publikasi" target="_top" class="btn-outline btn-green">Lihat Layanan <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-left">
+            <i class="fas fa-bullseye"></i> Melindungi Negeri,
+        </div>
+        <div class="footer-right">
+            &copy; 2026 BKHIT Sulawesi Tenggara. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- SIDEBAR MEDIA SOSIAL -->
+    <div class="social-sidebar">
+        <a href="https://www.facebook.com/share/18VQdfrSa7/?mibextid=wwXIfr" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/karantinasulawesitenggara?igsh=MXF5Z2cwaGtwZmk3bg%3D%3D&utm_source=qr" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@bkhitsultra?si=LhsWsiaBNOn0nKVU" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.tiktok.com/@karantinasultra?_r=1&_t=ZS-982lcSpsQdd" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://maps.app.goo.gl/jKM47qeiRWM6jGHG6" target="_blank" aria-label="Lokasi"><i class="fas fa-location-dot"></i></a>
     </div>
+
+    <!-- ============================================ -->
+    <!-- SEMUA MODAL DITUMPUK DI BAWAH SINI           -->
+    <!-- ============================================ -->
+
+    <!-- MODAL HASIL PENCARIAN -->
+    <div class="modal-overlay" id="searchResultModal">
+      <div class="modal-box" style="max-width: 1350px;">
+        <div class="modal-title">
+          <span><i class="fas fa-search"></i> Hasil Pencarian</span>
+          <i class="fas fa-times" onclick="closeSearchModal()"></i>
+        </div>
+        <div class="modal-desc" id="searchResultContent" style="max-height: 70vh; overflow-y: auto;">
+          <!-- Hasil akan diisi oleh JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 1: LAIKA (BERANDA) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <div class="modal-title">
+                <span>Tentang Laika</span>
+                <i class="fas fa-times" onclick="closeLaikaModal()"></i>
+            </div>
+            <div class="modal-desc">
+                <strong>Laika</strong> (Layanan Informasi Karantina) adalah portal terintegrasi yang disediakan oleh Balai Karantina Hewan Ikan & Tumbuhan Sulawesi Tenggara untuk memudahkan masyarakat mengakses layanan perkarantinaan. 
+                <br><br>
+                Melalui portal ini, Anda dapat mengakses berbagai regulasi dan publikasi terkait tindakan karantina di wilayah Sulawesi Tenggara.
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PTK -->
+    <div class="ptk-modal-overlay" id="ptkModal">
+        <div class="ptk-modal-box">
+            <div class="ptk-modal-header">
+                <span>Permohonan Tindakan Karantina (PTK)</span>
+                <i class="fas fa-times" onclick="closePTKModal()"></i>
+            </div>
+            <div class="ptk-modal-body">
+                <div class="ptk-sub-grid">
+                    <a href="https://registrasi.karantinaindonesia.go.id/barantin/login" target="_blank" class="ptk-sub-card">
+                        <div class="ptk-sub-icon sub-icon-blue"><i class="fas fa-user-plus"></i></div>
+                        <span class="ptk-sub-text">Registrasi PTK Onlain</span>
+                    </a>
+                    <a href="https://ptk.karantinaindonesia.go.id/" target="_blank" class="ptk-sub-card">
+                        <div class="ptk-sub-icon sub-icon-red"><i class="fas fa-pen-to-square"></i></div>
+                        <span class="ptk-sub-text">Pengajuan PTK Onlain</span>
+                    </a>
+                    <a href="https://drive.google.com/file/d/1bbvEV_OEeNhWbjLWNEJgg89CgPmzhuI8/view?usp=drive_link" target="_blank" class="ptk-sub-card">
+                        <div class="ptk-sub-icon sub-icon-purple"><i class="fas fa-file-pdf"></i></div>
+                        <span class="ptk-sub-text">Tutorial Registrasi PTK </span>
+                    </a>
+                    <a href="https://drive.google.com/file/d/1bgqFhNL1TKwbEQg9EeDOcGKfAt33DW_7/view?usp=drive_link" target="_blank" class="ptk-sub-card">
+                        <div class="ptk-sub-icon sub-icon-orange"><i class="fas fa-file-pdf"></i></div>
+                        <span class="ptk-sub-text">Tutorial Pengajuan</span>
+                    </a>
+                    <a href="https://api.whatsapp.com/send/?phone=%2B6282227022229&text&type=phone_number&app_absent=0" target="_blank" class="ptk-sub-card">
+                        <div class="ptk-sub-icon sub-icon-green"><i class="fas fa-headset"></i></div>
+                        <span class="ptk-sub-text">Kontak Helpdesk</span>
+                    </a>
+                    <a href="https://registrasi.karantinaindonesia.go.id/register/status" target="_blank" class="ptk-sub-card">
+                        <div class="ptk-sub-icon sub-icon-teal"><i class="fas fa-clock"></i></div>
+                        <span class="ptk-sub-text">Cek Status Registrasi PTK</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: LAYANAN PUBLIK -->
+    <div class="publik-modal-overlay" id="publikModal">
+        <div class="publik-modal-box">
+            <div class="publik-modal-header">
+                <span>Layanan Publik</span>
+                <i class="fas fa-times" onclick="closePublikModal()"></i>
+            </div>
+            <div class="publik-modal-body">
+                <div class="publik-sub-grid">
+                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=SurveyIKM" target="_blank" class="publik-sub-card">
+                        <div class="publik-sub-icon sub-icon-blue"><i class="fas fa-star"></i></div>
+                        <span class="publik-sub-text">Indeks Kepuasan Masyarakat (IKM)</span>
+                    </a>
+                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=PPIDA" target="_blank" class="publik-sub-card">
+                        <div class="publik-sub-icon sub-icon-red"><i class="fas fa-file-contract"></i></div>
+                        <span class="publik-sub-text">PPID FORM A<br>(Badan Hukum/Publik/Kelompok)</span>
+                    </a>
+                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=PPID_B" target="_blank" class="publik-sub-card">
+                        <div class="publik-sub-icon sub-icon-purple"><i class="fas fa-file-signature"></i></div>
+                        <span class="publik-sub-text">PPID FORM B<br>(Perorangan)</span>
+                    </a>
+                    <a href="<?= ScriptApp.getService().getUrl(); ?>?page=Aduan" target="_blank" class="publik-sub-card">
+                        <div class="publik-sub-icon sub-icon-orange"><i class="fas fa-bullhorn"></i></div>
+                        <span class="publik-sub-text">Layanan Aduan</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: LAYANAN PERKARANTINAAN -->
+    <div class="perkarantinaan-modal-overlay" id="perkarantinaanModal">
+        <div class="perkarantinaan-modal-box">
+            <div class="perkarantinaan-modal-header">
+                <span>Layanan Perkarantinaan</span>
+                <i class="fas fa-times" onclick="closePerkarantinaanModal()"></i>
+            </div>
+            <div class="perkarantinaan-modal-body">
+                <div class="perkarantinaan-sub-grid">
+                    <a href="#" target="_blank" class="perkarantinaan-sub-card">
+                        <div class="perkarantinaan-sub-icon sub-icon-blue"><i class="fas fa-cow"></i></div>
+                        <span class="perkarantinaan-sub-text">IKH<br>(Instalasi Karantina Hewan)</span>
+                    </a>
+                    <a href="#" target="_blank" class="perkarantinaan-sub-card">
+                        <div class="perkarantinaan-sub-icon sub-icon-teal"><i class="fas fa-fish"></i></div>
+                        <span class="perkarantinaan-sub-text">IKI<br>(Instalasi Karantina Ikan)</span>
+                    </a>
+                    <a href="https://ikt.karantinaindonesia.go.id/ikt/?tab=login" target="_blank" class="perkarantinaan-sub-card">
+                        <div class="perkarantinaan-sub-icon sub-icon-green"><i class="fas fa-leaf"></i></div>
+                        <span class="perkarantinaan-sub-text">IKT<br>(Instalasi Karantina Tumbuhan)</span>
+                    </a>
+                    <a href="https://idgacc.ref.ac/" target="_blank" class="perkarantinaan-sub-card">
+                        <div class="perkarantinaan-sub-icon sub-icon-orange"><i class="fas fa-passport"></i></div>
+                        <span class="perkarantinaan-sub-text">GACC<br>(General Administration of Customs China)</span>
+                    </a>
+                    <a href="https://sites.google.com/view/karantinatumbuhan-bki/home" target="_blank" class="perkarantinaan-sub-card">
+                        <div class="perkarantinaan-sub-icon sub-icon-purple"><i class="fas fa-seedling"></i></div>
+                        <span class="perkarantinaan-sub-text">Phyto-Req<br>(Phytosanitary Request)</span>
+                    </a>
+                    <a href="https://notice.karantinaindonesia.go.id/" target="_blank" class="perkarantinaan-sub-card">
+                        <div class="perkarantinaan-sub-icon sub-icon-red"><i class="fas fa-bell"></i></div>
+                        <span class="perkarantinaan-sub-text">Prior Notice</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: PORTAL INTERNAL -->
+    <div class="internal-modal-overlay" id="internalModal">
+        <div class="internal-modal-box">
+            <div class="internal-modal-header">
+                <span>Portal Layanan Internal</span>
+                <i class="fas fa-times" onclick="closeInternalModal()"></i>
+            </div>
+            <div class="internal-modal-body">
+                <div class="internal-sub-grid">
+                    <a href="#" target="_blank" class="internal-sub-card">
+                        <div class="internal-sub-icon sub-icon-blue"><i class="fas fa-database"></i></div>
+                        <span class="internal-sub-text">Sistem Penyimpanan<br>Dokumen ISO</span>
+                    </a>
+                    <a href="#" target="_blank" class="internal-sub-card">
+                        <div class="internal-sub-icon sub-icon-red">
+                            <i class="fas fa-bug rotating-icon"></i>
+                        </div>
+                        <span class="internal-sub-text">Sistem Pemantauan<br>OPTK</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL 6: DALAM PENGEMBANGAN -->
+    <div class="modal-overlay" id="modalPengembangan">
+        <div class="modal-box">
+            <div class="modal-title">
+                <span><i class="fas fa-tools" style="color: #FF9800; margin-right: 10px;"></i> Sedang Dalam Pengembangan</span>
+                <i class="fas fa-times" onclick="closePengembanganModal()"></i>
+            </div>
+            <div class="ptk-modal-body" style="text-align: center; padding: 30px;">
+                <p style="font-size: 16px; color: #1a2d5c; font-weight: 500; margin-bottom: 15px;">
+                    Maaf, fitur <strong>Profil</strong> saat ini masih dalam tahap pengembangan.
+                </p>
+                <p style="font-size: 14px; color: #555;">
+                    Kami akan segera merilisnya setelah proses pengembangan selesai. <br> Terima kasih atas pengertian dan dukungan Anda.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="search-loading-overlay" id="searchLoadingOverlay">
+        <div class="loader"></div>
+        <div class="loader-text">
+            <i class="fas fa-search"></i> Mencari data...
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-notification" id="toastNotification">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">Pesan</span>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- JAVASCRIPT MASTER                            -->
+    <!-- ============================================ -->
+    
+    <script>
+        // ==========================================================
+        // --- TOAST NOTIFICATION ---
+        // ==========================================================
+        let toastTimeout;
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toastNotification');
+            const msg = document.getElementById('toastMessage');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            
+            const icons = {
+                info: 'fa-info-circle',
+                success: 'fa-check-circle',
+                warning: 'fa-exclamation-triangle',
+                error: 'fa-times-circle'
+            };
+            toast.querySelector('i').className = 'fas ' + (icons[type] || icons.info);
+            
+            msg.textContent = message;
+            toast.className = 'toast-notification ' + type;
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================================
+        // --- LOADING OVERLAY ---
+        // ==========================================================
+        function showLoading(show) {
+            const overlay = document.getElementById('searchLoadingOverlay');
+            if (show) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        // ==========================================================
+        // --- PENCARIAN GLOBAL (DENGAN LOADING & SPINNER) ---
+        // ==========================================================
+
+        function performGlobalSearch() {
+            const input = document.getElementById('searchInput');
+            const query = input.value.trim();
+
+            if (!query) {
+                showToast('Masukkan kata kunci pencarian.', 'warning');
+                return;
+            }
+
+            showLoading(true);
+
+            const btn = document.getElementById('searchButton');
+            const icon = document.getElementById('searchIcon');
+            const spinner = document.getElementById('searchSpinner');
+            icon.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            btn.disabled = true;
+
+            google.script.run
+                .withSuccessHandler(function(result) {
+                    showLoading(false);
+                    icon.style.display = 'inline-block';
+                    spinner.style.display = 'none';
+                    btn.disabled = false;
+                    handleSearchResult(result);
+                })
+                .withFailureHandler(function(error) {
+                    showLoading(false);
+                    icon.style.display = 'inline-block';
+                    spinner.style.display = 'none';
+                    btn.disabled = false;
+                    handleSearchError(error);
+                })
+                .searchGlobal(query);
+        }
+
+        function handleSearchResult(result) {
+            resetServiceCards();
+            document.getElementById('searchInput').value = '';
+
+            if (result.status === 'error') {
+                showToast('❌ ' + result.message, 'error');
+                return;
+            }
+
+            const data = result.data;
+            showSearchResultsModal(data);
+
+            const total = (data.optk || []).length + (data.resiko || []).length + 
+                          (data.kodeHS || []).length + (data.dokumen || []).length;
+            if (total > 0) {
+                showToast('✅ Ditemukan ' + total + ' data terkait.', 'success');
+            } else {
+                showToast('Tidak ada hasil ditemukan.', 'warning');
+            }
+        }
+
+        function handleSearchError(error) {
+            resetServiceCards();
+            showToast('❌ Terjadi kesalahan: ' + error.message, 'error');
+            console.error('Search error:', error);
+        }
+
+        // ==========================================================
+        // --- RESET CARD LAYANAN ---
+        // ==========================================================
+        function resetServiceCards() {
+            const allCards = document.querySelectorAll('.service-card');
+            allCards.forEach(card => {
+                card.style.display = 'flex';
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            });
+        }
+
+        // ==========================================================
+        // --- TAMPILKAN HASIL PENCARIAN DI MODAL ---
+        // ==========================================================
+        function showSearchResultsModal(data) {
+            const modal = document.getElementById('searchResultModal');
+            const content = document.getElementById('searchResultContent');
+
+            let html = '';
+
+            if (data.geminiSummary) {
+                html += `
+                    <div style="background: #f0f4ff; padding: 16px; border-radius: 16px; margin-bottom: 24px; border-left: 4px solid #644ec5;">
+                        <h4 style="margin-bottom: 8px; color: #1a2d5c;">
+                            <i class="fas fa-robot" style="color: #644ec5;"></i> Rekomendasi AI (Gemini)
+                        </h4>
+                        <p style="color: #333; line-height: 1.7; font-size: 14px;">${data.geminiSummary}</p>
+                    </div>
+                `;
+            }
+
+            function renderTable(items, title, icon, iconColor) {
+                if (!items || items.length === 0) return '';
+                
+                let rawHeaders = Object.keys(items[0]);
+                let tableHeaders = rawHeaders;
+
+                // KUNCI URUTAN: Paksa susunan spesifik untuk Flora Fauna
+                if (title === 'Status Flora & Fauna Dilindungi') {
+                    const desiredOrder = ['Nama Ilmiah', 'Nama Lokal', 'Status IUCN', 'Appendix CITES', 'Taksonomi'];
+                    tableHeaders = desiredOrder.filter(h => rawHeaders.includes(h));
+                    rawHeaders.forEach(h => {
+                        if (!tableHeaders.includes(h)) tableHeaders.push(h);
+                    });
+                }
+
+                // KUNCI URUTAN: Paksa susunan spesifik untuk Kode HS & Risiko
+                if (title === 'Kode HS & Risiko') {
+                    const desiredOrderRisiko = ['Jenis Media Pembawa', 'Uraian', 'Kategori Risiko', 'SLA Maksimal (Hari)', 'HS Code'];
+                    
+                    // 1. Masukkan kolom sesuai urutan prioritas
+                    tableHeaders = desiredOrderRisiko.filter(h => rawHeaders.includes(h));
+                    
+                    // 2. Masukkan kolom sisanya (jika ada), KECUALI 'Keterangan'
+                    rawHeaders.forEach(h => {
+                        if (!tableHeaders.includes(h) && h !== 'Keterangan') {
+                            tableHeaders.push(h);
+                        }
+                    });
+                    
+                    // 3. Paksa 'Keterangan' diletakkan di posisi paling akhir (ujung kanan)
+                    if (rawHeaders.includes('Keterangan')) {
+                        tableHeaders.push('Keterangan');
+                    }
+                }
+
+                // --- LOGIKA IKON KOMBINASI ---
+                let displayIcon = `<i class="fas ${icon}" style="color: ${iconColor};"></i>`;
+                
+                if (title === 'Status Flora & Fauna Dilindungi') {
+                    displayIcon = `
+                        <i class="fas fa-cow" style="color: #644ec5; font-size: 16px;"></i>
+                        <i class="fas fa-fish" style="color: #2196F3; font-size: 16px; margin: 0 4px;"></i>
+                        <i class="fas fa-leaf" style="color: #4CAF50; font-size: 16px; margin-right: 4px;"></i>
+                    `;
+                } else if (title === 'Kode HS & Risiko') {
+                    // Kombinasi Barcode (Kode HS) dan Peringatan (Risiko)
+                    displayIcon = `
+                        <i class="fas fa-barcode" style="color: #2196F3; font-size: 16px;"></i>
+                        <i class="fas fa-triangle-exclamation" style="color: #FF9800; font-size: 16px; margin-left: 6px;"></i>
+                    `;
+                }
+
+                let tableHtml = `
+                    <h4 style="margin-top: 20px; color: #1a2d5c; display: flex; align-items: center; gap: 8px;">
+                        <div>${displayIcon}</div> 
+                        <div>${title} (${items.length})</div>
+                    </h4>
+                    <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <table style="width:100%; border-collapse: collapse; font-size: 13px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                        <thead style="background: #f5f5f5;">
+                            <tr>
+                `;
+                // Menghilangkan underscore agar judul tabel lebih rapi dibaca
+                tableHeaders.forEach(h => {
+                    let customStyle = "";
+                    
+                    // --- ATUR UKURAN KOLOM DI SINI ---
+                    if (h === 'HS Code') {
+                        // Atur lebar HS Code (misal: 130px, dan cegah teksnya terpotong)
+                        customStyle = "width: 130px; min-width: 130px; white-space: nowrap;";
+                    } else if (h === 'Keterangan') {
+                        // Atur lebar minimal untuk Keterangan agar lebih lega
+                        customStyle = "min-width: 250px;";
+                    } else if (h === 'SLA Maksimal (Hari)') {
+                        customStyle = "width: 100px; text-align: center;";
+                    }
+                    
+                    tableHtml += `<th style="padding: 10px 12px; text-align: left; font-weight: 600; color: #1a2d5c; border-bottom: 2px solid #e0e0e0; ${customStyle}">${h.replace(/_/g, ' ')}</th>`;
+                });
+                tableHtml += `</tr></thead><tbody>`;
+                items.forEach(item => {
+                    tableHtml += `<tr>`;
+                    tableHeaders.forEach(h => {
+                        const val = item[h] || '-';
+                        tableHtml += `<td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0; word-break: break-word;">${val}</td>`;
+                    });
+                    tableHtml += `</tr>`;
+                });
+                tableHtml += `</tbody></table></div>`;
+                return tableHtml;
+            }
+
+            html += renderTable(data.kodeHS, 'Status Flora & Fauna Dilindungi', 'fa-paw', '#4CAF50');
+            html += renderTable(data.resiko, 'Kode HS & Risiko', 'fa-exclamation-triangle', '#ff9800');
+            html += renderTable(data.optk, 'Target OPTK', 'fa-bug', '#d32f2f');
+
+
+            if (data.dokumen && data.dokumen.length > 0) {
+                html += `<h4 style="margin-top: 20px; color: #1a2d5c;"><i class="fas fa-folder-open" style="color: #4caf50;"></i> Dokumen (${data.dokumen.length})</h4>`;
+                html += `<ul style="list-style: none; padding: 0;">`;
+                data.dokumen.forEach(item => {
+                    html += `<li style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                                <a href="${item.link}" target="_blank" style="color: #1a2d5c; font-weight: 500; text-decoration: none;">
+                                    <i class="fas fa-file-pdf" style="color: #d32f2f;"></i> ${item.namaFile}
+                                </a>
+                                <span style="font-size: 12px; color: #888; margin-left: 8px;">- ${item.folder}</span>
+                                <p style="font-size: 12px; color: #666; margin: 4px 0 0 0;">${item.deskripsi}</p>
+                            </li>`;
+                });
+                html += `</ul>`;
+            }
+
+            if (data.optk.length === 0 && data.resiko.length === 0 && data.kodeHS.length === 0 && data.dokumen.length === 0) {
+                html += `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-search" style="font-size: 48px; color: #ccc;"></i>
+                        <h3 style="color: #555; margin-top: 16px;">Tidak ada hasil ditemukan</h3>
+                        <p style="color: #888;">Coba gunakan kata kunci lain atau periksa ejaan Anda.</p>
+                        ${data.geminiSummary ? `<p style="color: #644ec5; font-weight: 500;">💡 ${data.geminiSummary}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            content.innerHTML = html;
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSearchModal() {
+            const modal = document.getElementById('searchResultModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        // ==========================================================
+        // --- FUNGSI MODAL LAINNYA ---
+        // ==========================================================
+        // ... (semua fungsi modal seperti openLaikaModal, dll tetap sama)
+        // ...
+
+        // KLIK BACKGROUND UNTUK TUTUP MODAL
+        document.addEventListener('click', function(e) {
+            // ... yang sudah ada
+            if (e.target.id === 'searchResultModal') closeSearchModal();
+        });
+
+        // MUNCUL OTOMATIS SETIAP HALAMAN DIMUAT
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                openLaikaModal();
+            }, 600);
+
+            // --- TAMBAHKAN UNTUK ENTER ---
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        performGlobalSearch();
+                    }
+                });
+            }
+        });
+
+        // HAPUS ATAU KOMENTARI BAGIAN LIVE FILTER DI BAWAH INI
+        /*
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                // ... filter card ...
+            });
+        }
+        */
+
+        // GSAP SCROLL ANIMATION
+        try {
+            if (typeof gsap !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                const cards = gsap.utils.toArray('.service-card');
+                cards.forEach(card => {
+                    gsap.from(card, {
+                        scrollTrigger: { trigger: card, start: "top 85%", toggleActions: "play none none none" },
+                        y: 40,
+                        opacity: 0,
+                        duration: 0.8,
+                        ease: "power2.out"
+                    });
+                });
+            }
+        } catch (error) {
+            console.log("GSAP tertunda.");
+        }
+
+        // ==========================================================
+        // --- FUNGSI UNTUK MEMBUKA & MENUTUP MODAL (TOMBOLLAYANAN) ---
+        // ==========================================================
+
+        // 1. Modal Laika (Beranda) & Pengembangan
+        function openLaikaModal() {
+            document.getElementById('modalOverlay').style.display = 'flex';
+            setTimeout(() => document.getElementById('modalOverlay').classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLaikaModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            setTimeout(() => { document.getElementById('modalOverlay').style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        function openPengembanganModal() {
+            document.getElementById('modalPengembangan').style.display = 'flex';
+            setTimeout(() => document.getElementById('modalPengembangan').classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closePengembanganModal() {
+            document.getElementById('modalPengembangan').classList.remove('active');
+            setTimeout(() => { document.getElementById('modalPengembangan').style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        // 2. Modal PTK
+        function openPTKModal() {
+            document.getElementById('ptkModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('ptkModal').classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closePTKModal() {
+            document.getElementById('ptkModal').classList.remove('active');
+            setTimeout(() => { document.getElementById('ptkModal').style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        // 3. Modal Layanan Publik
+        function openPublikModal() {
+            document.getElementById('publikModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('publikModal').classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closePublikModal() {
+            document.getElementById('publikModal').classList.remove('active');
+            setTimeout(() => { document.getElementById('publikModal').style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        // 4. Modal Layanan Perkarantinaan
+        function openPerkarantinaanModal() {
+            document.getElementById('perkarantinaanModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('perkarantinaanModal').classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closePerkarantinaanModal() {
+            document.getElementById('perkarantinaanModal').classList.remove('active');
+            setTimeout(() => { document.getElementById('perkarantinaanModal').style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        // 5. Modal Portal Internal
+        function openInternalModal() {
+            document.getElementById('internalModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('internalModal').classList.add('active'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeInternalModal() {
+            document.getElementById('internalModal').classList.remove('active');
+            setTimeout(() => { document.getElementById('internalModal').style.display = 'none'; }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+
+    </script>
 </body>
 </html>
