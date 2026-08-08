@@ -11,12 +11,13 @@ async function fetchGasAPI(action, payload = null) {
     const url = new URL(GAS_API_URL);
     
     if (payload) {
-        // Jika ada payload (data form), gunakan POST
         try {
             const response = await fetch(url.toString(), {
                 method: 'POST',
-                // Kirim sebagai text/plain untuk menghindari error CORS preflight
-                body: JSON.stringify({ action: action, payload: payload }),
+                body: JSON.stringify({ 
+                    action: action, 
+                    payload: payload // Struktur ini HARUS persis begini agar bisa dibaca Code.gs
+                }),
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8', 
                 }
@@ -27,7 +28,6 @@ async function fetchGasAPI(action, payload = null) {
             return { status: 'error', message: error.message };
         }
     } else {
-        // Jika tidak ada payload, gunakan GET
         url.searchParams.append('action', action);
         try {
             const response = await fetch(url.toString());
