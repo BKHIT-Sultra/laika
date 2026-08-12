@@ -3,7 +3,7 @@
 // ==========================================================
 
 // Gunakan URL Web App terbaru Anda yang menggunakan akun Gmail pribadi
-const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxG3fphRu1THzwoBNFF7ll5mfa8l-xaNKZ5BbmS-d7jk26-B_BLLFJeUmI5xzTUGPP5/exec";
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyR223FisSCUKg4IOhu_I6Kcx1oJeIi9j8vyrppvV33MBLQWCQ9N16boYZ9_SQYFJk/exec";
 
 async function fetchGasAPI(action, payload = null) {
     try {
