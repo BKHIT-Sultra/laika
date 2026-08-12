@@ -1421,7 +1421,7 @@
         async function fetchGasAPI(action, payload = null) {
             try {
                 let response;
-                const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyR223FisSCUKg4IOhu_I6Kcx1oJeIi9j8vyrppvV33MBLQWCQ9N16boYZ9_SQYFJk/exec";
+                const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxgzcvqmo83AvBZONjFVjbynm-RAp8iF9X7kWKu9l0YiSwAP-R_-uRX2U919TGkbMD1/exec";
 
                 if (payload !== null) {
                     response = await fetch(GAS_API_URL, {
@@ -1475,6 +1475,51 @@
         function handleLogout() {
             handleLogoutLocal();
         }
+
+        // --- FUNGSI GABUNGAN OVERVIEW DASHBOARD ---
+        async function loadDashboardOverview() {
+            try {
+                const res = await fetchGasAPI('getDashboardOverviewData');
+                if (res.status === 'success') {
+                    const d = res.data;
+                    
+                    // 1. Render Statistik Utama
+                    if (d.statistik) {
+                        document.getElementById('totalRegulasi').textContent = d.statistik.totalRegulasi; 
+                        document.getElementById('totalPPID').textContent = d.statistik.totalPPID; 
+                        document.getElementById('totalAduan').textContent = d.statistik.totalAduan; 
+                        document.getElementById('indeksIKM').textContent = d.statistik.indeksIKM;
+                    }
+                    
+                    // 2. Render Statistik SDM
+                    if (d.sdm) {
+                        document.getElementById('totalKegiatanSDM').textContent = d.sdm.totalKegiatan;
+                        document.getElementById('totalSelesaiSDM').textContent = d.sdm.totalSelesai;
+                    }
+                    
+                    // 3. Render Grafik
+                    if (d.grafik) {
+                        // Jika fungsi render chart Anda bernama loadGrafikStatistik atau sudah disesuaikan, panggil di sini
+                        // Atau biarkan memanggil fungsi grafik yang sudah ada sebelumnya
+                    }
+                    
+                    // 4. Render Aktivitas Terakhir
+                    const c = document.getElementById('aktivitasTerakhirContainer');
+                    if (d.aktivitas && d.aktivitas.length > 0) {
+                        c.innerHTML = d.aktivitas.map(i => `<div class="activity-item"><div class="activity-icon" style="color:${i.color};"><i class="fas ${i.icon}"></i></div><div><div class="activity-text">${i.text}</div><div class="activity-time">${i.time}</div></div></div>`).join('');
+                    } else {
+                        c.innerHTML = `<div class="activity-item"><div class="activity-icon"><i class="fas fa-info-circle"></i></div><div><div class="activity-text">Belum ada aktivitas</div></div></div>`;
+                    }
+                    
+                    // 5. Render IKM Summary
+                    if (d.ikm) {
+                        document.getElementById('ikmIndeks').textContent = d.ikm.indeks || '0.0';
+                    }
+                }
+            } catch(e) {
+                console.warn('Gagal memuat overview dashboard', e);
+            }
+        }
     
         // --- FUNGSI NAVIGASI YANG DIPERBAIKI ---
         function switchView(viewName) {
@@ -1494,7 +1539,6 @@
             if (menu) {
                 menu.classList.add('active');
             } else {
-                // Jika itu menu dropdown (seperti ppid, aduan, ikm di dalam Layanan Publik)
                 const dropdownItem = document.querySelector(`.dropdown-item[onclick*="${viewName}"]`);
                 if (dropdownItem) {
                     dropdownItem.closest('.nav-item').classList.add('active');
@@ -1503,11 +1547,7 @@
         
             // Panggil fungsi data loader sesuai menu yang dibuka
             if (viewName === 'dashboard') {
-                loadStatistik();
-                loadStatistikSDM();
-                loadGrafikStatistik();
-                loadAktivitasTerakhir();
-                loadIKMSummaryOnly();
+                loadDashboardOverview(); // <-- Ganti pemanggilan lama dengan fungsi gabungan ini
             } else if (viewName === 'regulasi') {
                 loadRegulasi();
             } else if (viewName === 'ppid') {
