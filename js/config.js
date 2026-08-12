@@ -10,11 +10,13 @@ async function fetchGasAPI(action, payload = null) {
     try {
         const response = await fetch(GAS_API_URL, {
             method: 'POST',
-            // ⚠️ PERUBAHAN PENTING: Hapus header 'Content-Type', tapi tetap kirim JSON sebagai String
             body: JSON.stringify({ 
                 action: action, 
                 payload: payload 
-            })
+            }),
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8' // Wajib ada agar tidak diblokir CORS
+            }
         });
 
         // Jika server GAS mengembalikan error 404 atau 500
