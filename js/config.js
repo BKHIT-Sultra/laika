@@ -3,7 +3,7 @@
 // ==========================================================
 
 // ⚠️ GANTI URL DI BAWAH INI DENGAN URL TERBARU HASIL DEPLOY ANDA
-const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwOrHLYF5gp4Zx4tfn0mc1ikCZnppZnDCEywBlTq1vnVDRV0g2fB2JKekcmT0P1A4k/exec";
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycby88siZ9Zf23IJbSh9tLRAGpNm-1kawFZ5ACYzEP9v98TEH2Ryd7QEP1j600AR784xZ/exec";
 
 // FUNGSI YANG LEBIH TANGGUH UNTUK MENGATASI FAILED TO FETCH
 async function fetchGasAPI(action, payload = null) {
