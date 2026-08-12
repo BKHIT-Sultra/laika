@@ -158,15 +158,17 @@
         btn.disabled = true;
     
         try {
-            const result = await fetchGasAPI('cekLogin', { 
-                username: username.trim(), 
-                password: password.trim() 
-            });
-    
+            // JURUS ANTI GAGAL: Memaksa bypass CORS menggunakan GET request
+            const urlLogin = GAS_API_URL + "?action=cekLogin&username=" + encodeURIComponent(username.trim()) + "&password=" + encodeURIComponent(password.trim());
+            const response = await fetch(urlLogin);
+            
+            if (!response.ok) throw new Error("Gagal memuat API dari server.");
+            const result = await response.json();
+            
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
             btn.disabled = false;
-    
+
             if (result.status === 'success') {
                 const userData = {
                     nama: result.data.nama || username,
@@ -180,18 +182,17 @@
                 localStorage.setItem('laika_logged_in', 'true');
                 localStorage.setItem('laika_login_timestamp', Date.now().toString());
                 localStorage.setItem('laika_user_data', JSON.stringify(userData));
-    
+
                 window.location.replace("./dashboard.html");
             } else {
                 alert(result.message || 'Username atau password salah!');
             }
-    
+
         } catch (error) {
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
             btn.disabled = false;
-            // ⚠️ PENTING: Jika muncul "Failed to fetch", error ini berasal dari js/config.js
-            alert('Gagal terhubung ke server (Failed to fetch): ' + error.message);
+            alert('Gagal terhubung ke server. Pastikan internet stabil. Error: ' + error.message);
         }
     }
   </script>
