@@ -1442,6 +1442,27 @@
                 throw error;
             }
         }
+
+        // Fungsi untuk otomatis menarik data profil terbaru dari Database saat halaman dimuat
+        async function loadUserData() {
+            const username = localStorage.getItem('laika_username');
+            if (!username) return;
+
+            try {
+                const res = await fetchGasAPI('cekLogin', { username: username, password: '' }); 
+                // Atau buat fungsi khusus ambil data user di backend jika ada, 
+                // namun kita bisa manfaatkan data yang disimpan saat login:
+                const savedData = JSON.parse(localStorage.getItem('laika_user_data'));
+                if (savedData && savedData.nama) {
+                    // Update semua teks nama di navbar & dropdown secara otomatis
+                    document.querySelectorAll('.user-name-text').forEach(el => el.textContent = savedData.nama);
+                    document.querySelectorAll('.user-dropdown-header strong').forEach(el => el.textContent = savedData.nama);
+                    document.querySelectorAll('.user-dropdown-header span').forEach(el => el.textContent = savedData.wilayah || 'Sulawesi Tenggara');
+                }
+            } catch (err) {
+                console.warn("Gagal memuat profil user:", err);
+            }
+        }
     
         // --- CEK SESSION SAAT MUAT HALAMAN ---
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1459,7 +1480,9 @@
                     handleLogoutLocal(); 
                     return;
                 }
-        
+                // 👇👇 TAMBAHKAN BARIS INI AGAR NAMA LANGSUNG MENGAMBIL DARI DATABASE/LOCALSTORAGE 👇👇
+                loadUserData();
+                // 👆👆 -------------------------------------------------------------------------- 👆👆
                 // Jalankan switchView setelah dipastikan aman
                 switchView('dashboard');
             } catch (error) {
