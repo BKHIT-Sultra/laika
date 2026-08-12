@@ -106,7 +106,9 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // Cek sesi login
+        const authContainer = document.querySelector('.auth-wrapper');
+        
+        // 1. Cek sesi login
         const isLoggedIn = localStorage.getItem('laika_logged_in');
         const loginTimestamp = localStorage.getItem('laika_login_timestamp');
         
@@ -115,24 +117,34 @@
             const ONE_HOUR = 60 * 60 * 1000;
             
             if (!isNaN(ts) && (Date.now() - ts <= ONE_HOUR)) {
-                // PENGGANTIAN LINK REDIRECT KE DASHBOARD
                 window.location.replace("./dashboard.html");
                 return;
             }
         }
 
-        // Bersihkan sisa data lama
-        localStorage.clear();
-        
-        // Tampilkan form
-        const authContainer = document.querySelector('.auth-wrapper');
-        authContainer.style.visibility = 'visible';
-        
-        // Animasi GSAP
-        gsap.fromTo(".auth-wrapper", 
-            { y: 30, opacity: 0 }, 
-            { duration: 1.2, y: 0, opacity: 1, ease: "power4.out" }
-        );
+        // 2. ⚠️ JANGAN PAKAI localStorage.clear()! Hapus hanya data sesi yang kadaluarsa.
+        localStorage.removeItem('laika_logged_in');
+        localStorage.removeItem('laika_login_timestamp');
+        localStorage.removeItem('laika_username');
+        localStorage.removeItem('laika_user_data');
+
+        // 3. Tampilkan form terlebih dahulu (pastikan opacity menjadi 1 agar terlihat!)
+        if (authContainer) {
+            authContainer.style.visibility = 'visible';
+            authContainer.style.opacity = '1'; // ✅ PENTING: Mencegah form hilang jika GSAP gagal
+        }
+
+        // 4. Jalankan animasi GSAP dengan aman (fallback jika GSAP gagal load)
+        try {
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(".auth-wrapper", 
+                    { y: 30, opacity: 0 }, 
+                    { duration: 1.2, y: 0, opacity: 1, ease: "power4.out" }
+                );
+            }
+        } catch (error) {
+            console.warn("GSAP gagal dimuat, tapi form tetap muncul.");
+        }
     });
 
     // MENGUBAH FUNGSI LOGIN MENGGUNAKAN FETCH API
@@ -145,48 +157,46 @@
     
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
         btn.style.opacity = '0.7';
+        btn.disabled = true;
     
         try {
-            // Perhatikan, payload kita bungkus dengan jelas
             const result = await fetchGasAPI('cekLogin', { 
                 username: username.trim(), 
                 password: password.trim() 
             });
     
+            // Kembalikan tombol
+            btn.innerHTML = originalText;
+            btn.style.opacity = '1';
+            btn.disabled = false;
+    
             if (result.status === 'success') {
-                // --- ✅ TAMBAHKAN BAGIAN INI ---
-                // Pastikan backend mengirim data user (nama, wilayah, email, jabatan)
+                // Simpan data user
                 const userData = {
-                    nama: result.data.nama || username,        // Jika backend kirim nama
+                    nama: result.data.nama || username,
                     username: username,
                     wilayah: result.data.wilayah || 'Wilayah Sulawesi Tenggara',
                     email: result.data.email || '',
                     jabatan: result.data.jabatan || 'Administrator'
                 };
                 
-                // Simpan sesi login & data profil ke Local Storage
                 localStorage.setItem('laika_username', username);
                 localStorage.setItem('laika_logged_in', 'true');
                 localStorage.setItem('laika_login_timestamp', Date.now().toString());
-                localStorage.setItem('laika_user_data', JSON.stringify(userData)); // ✅ SIMPAN DATA LENGKAP
-                // ------------------------------
+                localStorage.setItem('laika_user_data', JSON.stringify(userData));
     
-                // PENGGANTIAN LINK REDIRECT SETELAH LOGIN SUKSES
                 window.location.replace("./dashboard.html");
             } else {
-                // Username/password salah (dapat dari backend)
-                btn.innerHTML = originalText;
-                btn.style.opacity = '1';
                 alert(result.message || 'Username atau password salah!');
             }
     
         } catch (error) {
-            // Jika ada kesalahan jaringan (gagal fetch)
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
+            btn.disabled = false;
             alert('Gagal terhubung ke server: ' + error.message);
         }
     }
-  </script>
+</script>
 </body>
 </html>
