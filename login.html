@@ -13,7 +13,6 @@
   <script src="js/config.js"></script>
 
   <style>
-    /* ... (Semua CSS biarkan sama persis seperti aslinya) ... */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
     body {
       display: flex; justify-content: center; align-items: center;
@@ -70,7 +69,6 @@
 </head>
 <body>
   <div class="auth-wrapper">
-    <!-- PENGGANTIAN LINK KEMBALI KE BERANDA -->
     <a href="index.html" class="back-home-btn">
       <i class="fas fa-home"></i> Beranda
     </a>
@@ -122,19 +120,19 @@
             }
         }
 
-        // 2. ⚠️ JANGAN PAKAI localStorage.clear()! Hapus hanya data sesi yang kadaluarsa.
+        // 2. Hapus data sesi yang kadaluarsa
         localStorage.removeItem('laika_logged_in');
         localStorage.removeItem('laika_login_timestamp');
         localStorage.removeItem('laika_username');
         localStorage.removeItem('laika_user_data');
 
-        // 3. Tampilkan form terlebih dahulu (pastikan opacity menjadi 1 agar terlihat!)
+        // 3. Tampilkan form
         if (authContainer) {
             authContainer.style.visibility = 'visible';
-            authContainer.style.opacity = '1'; // ✅ PENTING: Mencegah form hilang jika GSAP gagal
+            authContainer.style.opacity = '1'; 
         }
 
-        // 4. Jalankan animasi GSAP dengan aman (fallback jika GSAP gagal load)
+        // 4. Jalankan animasi GSAP
         try {
             if (typeof gsap !== 'undefined') {
                 gsap.fromTo(".auth-wrapper", 
@@ -147,7 +145,7 @@
         }
     });
 
-    // MENGUBAH FUNGSI LOGIN MENGGUNAKAN FETCH API
+    // FUNGSI LOGIN
     async function handleLogin(e) {
         e.preventDefault();
         const btn = document.querySelector('.login-btn');
@@ -165,13 +163,11 @@
                 password: password.trim() 
             });
     
-            // Kembalikan tombol
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
             btn.disabled = false;
     
             if (result.status === 'success') {
-                // Simpan data user
                 const userData = {
                     nama: result.data.nama || username,
                     username: username,
@@ -194,9 +190,10 @@
             btn.innerHTML = originalText;
             btn.style.opacity = '1';
             btn.disabled = false;
-            alert('Gagal terhubung ke server: ' + error.message);
+            // ⚠️ PENTING: Jika muncul "Failed to fetch", error ini berasal dari js/config.js
+            alert('Gagal terhubung ke server (Failed to fetch): ' + error.message);
         }
     }
-</script>
+  </script>
 </body>
 </html>
