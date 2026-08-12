@@ -1423,13 +1423,29 @@
         // ============================================================
         // FUNGSI KOMUNIKASI DENGAN GOOGLE APPS SCRIPT (GAS)
         // ============================================================
-        async function fetchGasAPI(funcName, payload = {}) {
-            return new Promise((resolve, reject) => {
-                google.script.run
-                    .withSuccessHandler(resolve)
-                    .withFailureHandler(reject)
-                    [funcName](payload);
-            });
+        async function fetchGasAPI(action, payload = null) {
+            try {
+                let response;
+                const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyR223FisSCUKg4IOhu_I6Kcx1oJeIi9j8vyrppvV33MBLQWCQ9N16boYZ9_SQYFJk/exec";
+
+                if (payload !== null) {
+                    response = await fetch(GAS_API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: action, payload: payload }),
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    });
+                } else {
+                    const getUrl = GAS_API_URL + "?action=" + encodeURIComponent(action);
+                    response = await fetch(getUrl);
+                }
+
+                if (!response.ok) throw new Error(`Server Error: ${response.status}`);
+                return await response.json();
+                
+            } catch (error) {
+                console.error("Gagal fetch ke GAS:", error);
+                throw error;
+            }
         }
     
         // --- CEK SESSION SAAT MUAT HALAMAN ---
@@ -1546,7 +1562,7 @@
             else { alert('Tipe data tidak dikenal'); return; }
     
             try {
-                const res = await fetchGasAPI(backendFunc);
+                const res = await (backendFunc);
                 if (res.status === 'success') {
                     const dataArray = res.data;
                     if (!dataArray || dataArray.length === 0) {
@@ -1582,7 +1598,7 @@
         // ==========================================
         async function loadStatistik() {
             try {
-                const res = await fetchGasAPI('ambilStatistikDashboard');
+                const res = await ('ambilStatistikDashboard');
                 if(res.status === 'success') {
                     const d = res.data;
                     document.getElementById('totalRegulasi').textContent = d.totalRegulasi; 
@@ -1595,7 +1611,7 @@
     
         async function loadStatistikSDM() {
             try {
-                const res = await fetchGasAPI('ambilStatistikSDM');
+                const res = await ('ambilStatistikSDM');
                 if(res.status === 'success') {
                     document.getElementById('totalKegiatanSDM').textContent = res.data.totalKegiatan;
                     document.getElementById('totalSelesaiSDM').textContent = res.data.totalSelesai;
@@ -1606,7 +1622,7 @@
         async function loadAktivitasTerakhir() {
             const c = document.getElementById('aktivitasTerakhirContainer');
             try {
-                const res = await fetchGasAPI('ambilAktivitasTerakhir');
+                const res = await ('ambilAktivitasTerakhir');
                 if(res.status === 'success') {
                     const d = res.data;
                     if (!d || d.length === 0) { c.innerHTML = `<div class="activity-item"><div class="activity-icon" style="color:var(--text-muted);"><i class="fas fa-info-circle"></i></div><div><div class="activity-text">Belum ada aktivitas</div><div class="activity-time">-</div></div></div>`; return; }
@@ -1618,7 +1634,7 @@
         let myChart = null;
         async function loadGrafikStatistik() {
             try {
-                const res = await fetchGasAPI('ambilStatistikGrafik');
+                const res = await ('ambilStatistikGrafik');
                 if(res.status === 'success') {
                     const d = res.data;
                     const canvas = document.getElementById('statistikChart');
@@ -2607,6 +2623,17 @@
                 btn.innerHTML = originalText;
                 btn.style.background = '';
                 btn.style.opacity = '1';
+            }
+        }
+
+        function updateFileLabel(input) {
+            const label = document.getElementById('fileLabel');
+            if (input.files && input.files.length > 0) {
+                label.textContent = "File dipilih: " + input.files[0].name;
+                label.style.color = "var(--laika-green)";
+            } else {
+                label.textContent = "Klik atau Seret file ke area ini";
+                label.style.color = "var(--text-dark)";
             }
         }
     
