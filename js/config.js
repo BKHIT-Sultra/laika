@@ -16,10 +16,11 @@ async function fetchGasAPI(action, payload = null) {
                 method: 'POST',
                 body: JSON.stringify({ 
                     action: action, 
-                    payload: payload // Struktur ini HARUS persis begini agar bisa dibaca Code.gs
+                    payload: payload
                 }),
                 headers: {
-                    'Content-Type': 'text/plain;charset=utf-8', 
+                    // ✅ PERBAIKAN PENTING DI SINI (Ganti text/plain menjadi application/json)
+                    'Content-Type': 'application/json' 
                 }
             });
             return await response.json();
