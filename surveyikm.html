@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey IKM - Laika BKHIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP untuk animasi halus saat scroll -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* --- WARNA DASAR LAIKA (3 WARNA) --- */
+        :root {
+            --laika-purple: #6C5CE7;
+            --laika-blue: #2196F3;
+            --laika-green: #4CAF50;
+            --gradient-main: linear-gradient(135deg, var(--laika-purple) 0%, var(--laika-blue) 50%, var(--laika-green) 100%);
+            
+            --bg-body: #f0f4f9; 
+            --text-dark: #1c1c1e; 
+            --text-muted: #86868b;
+            --border-glass: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            min-height: 100vh; background-color: #f0f4f9; color: #1c1c1e;
+            background: url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover;
+            background-size: cover; position: relative; overflow-y: auto; padding: 40px 20px;
+        }
+
+        /* Overlay transparan untuk background */
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 0;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- WRAPPER & HEADER --- */
+        .page-container {
+            position: relative; z-index: 2; max-width: 800px; margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;
+        }
+        
+        .page-title { 
+            font-size: 28px; font-weight: 700; 
+            background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .back-home-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-glass);
+            padding: 8px 20px; border-radius: 50px;
+            font-weight: 600; font-size: 13px; color: var(--text-dark);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s; 
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .back-home-btn:hover { 
+            background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); 
+            border-color: var(--laika-purple);
+        }
+
+        /* --- GLASS CARD FORM --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            border-radius: 28px; padding: 30px; margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover { box-shadow: 0 20px 60px rgba(108, 92, 231, 0.05); }
+
+        /* --- ELEMEN FORM --- */
+        .section-title {
+            font-size: 18px; font-weight: 700; color: var(--text-dark);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
+        .section-title .num {
+            display: flex; justify-content: center; align-items: center;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--laika-purple); color: white; font-size: 14px;
+        }
+        .section-title .num.blue { background: var(--laika-blue); }
+        .section-title .num.green { background: var(--laika-green); }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 6px; }
+        .form-label .required { color: #ff3b30; }
+
+        .form-control {
+            width: 100%; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 16px; font-size: 14px; transition: 0.3s; outline: none;
+            background: rgba(255,255,255,0.7); font-family: 'Poppins';
+        }
+        .form-control:focus { border-color: var(--laika-purple); background: white; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); }
+
+        /* --- RADIO BUTTON CUSTOM (MacOS Style) --- */
+        .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .radio-row { display: flex; flex-wrap: wrap; gap: 12px; }
+        .radio-option {
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            padding: 6px 12px; border-radius: 12px; transition: 0.2s;
+        }
+        .radio-option:hover { background: rgba(108, 92, 231, 0.05); }
+        .radio-option input[type="radio"] { display: none; }
+        
+        .radio-option .custom-radio {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid #d1d1d6; position: relative; flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .radio-option input[type="radio"]:checked + .custom-radio {
+            border-color: var(--laika-purple);
+            background: var(--laika-purple);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+        }
+        .radio-option input[type="radio"]:checked + .custom-radio::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 6px; height: 6px; border-radius: 50%; background: white;
+        }
+        .radio-option .label-text { font-size: 14px; color: var(--text-dark); font-weight: 500; }
+
+        /* --- BUTTON SUBMIT --- */
+        .btn-submit {
+            width: 100%; background: var(--gradient-main); color: white;
+            border: none; padding: 16px; border-radius: 16px; font-weight: 700;
+            font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(108, 92, 231, 0.4); }
+        .btn-submit:disabled { opacity: 0.7; transform: none; cursor: not-allowed; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            body { padding: 20px 10px; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .page-title { font-size: 24px; }
+            .glass-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <!-- HEADER -->
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-star" style="color: var(--laika-green); -webkit-text-fill-color: var(--laika-green);"></i> Survey Indeks Kepuasan Masyarakat</h1>
+            <a href="index.html" class="back-home-btn">
+                <i class="fas fa-home"></i> Kembali ke Beranda
+            </a>
+        </div>
+
+        <!-- FORM UTAMA -->
+        <form id="formIKM" onsubmit="handleSubmit(event)">
+            
+            <!-- DATA RESPONDEN -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span class="num"><i class="fas fa-user"></i></span> Identitas Responden
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tanggal Pengisian</label>
+                    <input type="text" id="tanggalOtomatis" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama <span class="required">*</span></label>
+                    <input type="text" id="nama" class="form-control" placeholder="Masukkan nama Anda" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Jenis Kelamin <span class="required">*</span></label>
+                    <div class="radio-row">
+                        <label class="radio-option"><input type="radio" name="jk" value="Pria" required><span class="custom-radio"></span><span class="label-text">Pria</span></label>
+                        <label class="radio-option"><input type="radio" name="jk" value="Wanita" required><span class="custom-radio"></span><span class="label-text">Wanita</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pendidikan Terakhir <span class="required">*</span></label>
+                    <div class="radio-row">
+                        <label class="radio-option"><input type="radio" name="pendidikan" value="SD" required><span class="custom-radio"></span><span class="label-text">SD</span></label>
+                        <label class="radio-option"><input type="radio" name="pendidikan" value="SMP" required><span class="custom-radio"></span><span class="label-text">SMP</span></label>
+                        <label class="radio-option"><input type="radio" name="pendidikan" value="SMA" required><span class="custom-radio"></span><span class="label-text">SMA</span></label>
+                        <label class="radio-option"><input type="radio" name="pendidikan" value="S1" required><span class="custom-radio"></span><span class="label-text">S1</span></label>
+                        <label class="radio-option"><input type="radio" name="pendidikan" value="S2" required><span class="custom-radio"></span><span class="label-text">S2</span></label>
+                        <label class="radio-option"><input type="radio" name="pendidikan" value="S3" required><span class="custom-radio"></span><span class="label-text">S3</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Usia <span class="required">*</span></label>
+                    <input type="number" id="usia" class="form-control" placeholder="Masukkan usia Anda" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pekerjaan <span class="required">*</span></label>
+                    <div class="radio-row">
+                        <label class="radio-option"><input type="radio" name="pekerjaan" value="PNS" required><span class="custom-radio"></span><span class="label-text">PNS</span></label>
+                        <label class="radio-option"><input type="radio" name="pekerjaan" value="TNI" required><span class="custom-radio"></span><span class="label-text">TNI</span></label>
+                        <label class="radio-option"><input type="radio" name="pekerjaan" value="POLRI" required><span class="custom-radio"></span><span class="label-text">POLRI</span></label>
+                        <label class="radio-option"><input type="radio" name="pekerjaan" value="SWASTA" required><span class="custom-radio"></span><span class="label-text">SWASTA</span></label>
+                        <label class="radio-option"><input type="radio" name="pekerjaan" value="WIRAUSAHA" required><span class="custom-radio"></span><span class="label-text">WIRAUSAHA</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Jenis Layanan Yang Diterima <span class="required">*</span></label>
+                    <input type="text" id="jenisLayanan" class="form-control" placeholder="Contoh: Pelayanan Kesehatan, Administrasi, dll." required>
+                </div>
+            </div>
+
+            <!-- BAGIAN PERTANYAAN 1 -->
+            <div class="glass-card">
+                <div class="section-title"><span class="num blue">1</span> Persepsi Layanan</div>
+                
+                <div class="form-group">
+                    <label class="form-label">1. Bagaimana pendapat Saudara tentang kesesuaian persyaratan pelayanan dengan jenis pelayanannya? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q1" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Sesuai</span></label>
+                        <label class="radio-option"><input type="radio" name="q1" value="2" required><span class="custom-radio"></span><span class="label-text">2. Kurang Sesuai</span></label>
+                        <label class="radio-option"><input type="radio" name="q1" value="3" required><span class="custom-radio"></span><span class="label-text">3. Sesuai</span></label>
+                        <label class="radio-option"><input type="radio" name="q1" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Sesuai</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">2. Bagaimana pendapat Saudara tentang kemudahan prosedur pelayanan di unit ini? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q2" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Mudah</span></label>
+                        <label class="radio-option"><input type="radio" name="q2" value="2" required><span class="custom-radio"></span><span class="label-text">2. Kurang Mudah</span></label>
+                        <label class="radio-option"><input type="radio" name="q2" value="3" required><span class="custom-radio"></span><span class="label-text">3. Mudah</span></label>
+                        <label class="radio-option"><input type="radio" name="q2" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Mudah</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">3. Bagaimana pendapat Saudara tentang kecepatan waktu dalam memberikan pelayanan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q3" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Cepat</span></label>
+                        <label class="radio-option"><input type="radio" name="q3" value="2" required><span class="custom-radio"></span><span class="label-text">2. Kurang Cepat</span></label>
+                        <label class="radio-option"><input type="radio" name="q3" value="3" required><span class="custom-radio"></span><span class="label-text">3. Cepat</span></label>
+                        <label class="radio-option"><input type="radio" name="q3" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Cepat</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">4. Bagaimana pendapat Saudara tentang kewajaran biaya/tarif dalam pelayanan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q4" value="1" required><span class="custom-radio"></span><span class="label-text">1. Sangat Mahal</span></label>
+                        <label class="radio-option"><input type="radio" name="q4" value="2" required><span class="custom-radio"></span><span class="label-text">2. Cukup Mahal</span></label>
+                        <label class="radio-option"><input type="radio" name="q4" value="3" required><span class="custom-radio"></span><span class="label-text">3. Murah</span></label>
+                        <label class="radio-option"><input type="radio" name="q4" value="4" required><span class="custom-radio"></span><span class="label-text">4. Gratis</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN PERTANYAAN 2 -->
+            <div class="glass-card">
+                <div class="section-title"><span class="num green">2</span> Kualitas Pelayanan & Petugas</div>
+
+                <div class="form-group">
+                    <label class="form-label">5. Bagaimana pendapat Saudara tentang kesesuaian produk pelayanan antara yang tercantum dalam standar pelayanan dengan hasil yang diberikan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q5" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Sesuai</span></label>
+                        <label class="radio-option"><input type="radio" name="q5" value="2" required><span class="custom-radio"></span><span class="label-text">2. Kurang Sesuai</span></label>
+                        <label class="radio-option"><input type="radio" name="q5" value="3" required><span class="custom-radio"></span><span class="label-text">3. Sesuai</span></label>
+                        <label class="radio-option"><input type="radio" name="q5" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Sesuai</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">6. Bagaimana pendapat Saudara tentang kompetensi/kemampuan petugas dalam pelayanan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q6" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Kompeten</span></label>
+                        <label class="radio-option"><input type="radio" name="q6" value="2" required><span class="custom-radio"></span><span class="label-text">2. Kurang Kompeten</span></label>
+                        <label class="radio-option"><input type="radio" name="q6" value="3" required><span class="custom-radio"></span><span class="label-text">3. Kompeten</span></label>
+                        <label class="radio-option"><input type="radio" name="q6" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Kompeten</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">7. Bagaimana pendapat Saudara tentang perilaku petugas dalam pelayanan terkait kesopanan dan keramahan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q7" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Sopan dan Ramah</span></label>
+                        <label class="radio-option"><input type="radio" name="q7" value="2" required><span class="custom-radio"></span><span class="label-text">2. Kurang Sopan dan Ramah</span></label>
+                        <label class="radio-option"><input type="radio" name="q7" value="3" required><span class="custom-radio"></span><span class="label-text">3. Sopan dan Ramah</span></label>
+                        <label class="radio-option"><input type="radio" name="q7" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Sopan dan Ramah</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">8. Bagaimana pendapat Saudara tentang kualitas sarana dan prasarana? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q8" value="1" required><span class="custom-radio"></span><span class="label-text">1. Buruk</span></label>
+                        <label class="radio-option"><input type="radio" name="q8" value="2" required><span class="custom-radio"></span><span class="label-text">2. Cukup</span></label>
+                        <label class="radio-option"><input type="radio" name="q8" value="3" required><span class="custom-radio"></span><span class="label-text">3. Baik</span></label>
+                        <label class="radio-option"><input type="radio" name="q8" value="4" required><span class="custom-radio"></span><span class="label-text">4. Sangat Baik</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN PERTANYAAN 3 -->
+            <div class="glass-card">
+                <div class="section-title"><span class="num">3</span> Pengaduan, Integritas & Anti Penyuapan</div>
+                
+                <div class="form-group">
+                    <label class="form-label">9. Bagaimana pendapat Saudara tentang penanganan pengaduan pengguna layanan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q9" value="1" required><span class="custom-radio"></span><span class="label-text">1. Tidak Ada</span></label>
+                        <label class="radio-option"><input type="radio" name="q9" value="2" required><span class="custom-radio"></span><span class="label-text">2. Ada tapi tidak berfungsi</span></label>
+                        <label class="radio-option"><input type="radio" name="q9" value="3" required><span class="custom-radio"></span><span class="label-text">3. Berfungsi kurang maksimal</span></label>
+                        <label class="radio-option"><input type="radio" name="q9" value="4" required><span class="custom-radio"></span><span class="label-text">4. Dikelola dengan baik</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">10. Bagaimana penilaian Bapak/Ibu tentang integritas petugas pelayanan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q10" value="1" required><span class="custom-radio"></span><span class="label-text">1. Sangat integritas</span></label>
+                        <label class="radio-option"><input type="radio" name="q10" value="2" required><span class="custom-radio"></span><span class="label-text">2. Berintegritas</span></label>
+                        <label class="radio-option"><input type="radio" name="q10" value="3" required><span class="custom-radio"></span><span class="label-text">3. Cukup berintegritas</span></label>
+                        <label class="radio-option"><input type="radio" name="q10" value="4" required><span class="custom-radio"></span><span class="label-text">4. Tidak berintegritas</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">11. Bagaimana penilaian bapak/ibu tentang komitmen anti penyuapan terhadap petugas pelayanan? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="q11" value="1" required><span class="custom-radio"></span><span class="label-text">1. Sangat berkomitmen</span></label>
+                        <label class="radio-option"><input type="radio" name="q11" value="2" required><span class="custom-radio"></span><span class="label-text">2. Berkomitmen</span></label>
+                        <label class="radio-option"><input type="radio" name="q11" value="3" required><span class="custom-radio"></span><span class="label-text">3. Cukup berkomitmen</span></label>
+                        <label class="radio-option"><input type="radio" name="q11" value="4" required><span class="custom-radio"></span><span class="label-text">4. Kurang berkomitmen</span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOMBOL KIRIM -->
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                <i class="fas fa-paper-plane"></i> Kirim Survey
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // --- SET TANGGAL OTOMATIS ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('tanggalOtomatis').value = today.toLocaleDateString('id-ID', options);
+        });
+
+        // --- HANDLE SUBMIT FORM ---
+        // 👇👇 GANTI DENGAN URL WEB APP MILIK ANDA YANG ASLI 👇👇
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxgzcvqmo83AvBZONjFVjbynm-RAp8iF9X7kWKu9l0YiSwAP-R_-uRX2U919TGkbMD1/exec";
+
+        // --- HANDLE SUBMIT FORM ---
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            btn.disabled = true;
+
+            // Ambil Data
+            const formData = {
+                tanggal: document.getElementById('tanggalOtomatis').value,
+                nama: document.getElementById('nama').value,
+                jk: document.querySelector('input[name="jk"]:checked')?.value,
+                pendidikan: document.querySelector('input[name="pendidikan"]:checked')?.value,
+                usia: document.getElementById('usia').value,
+                pekerjaan: document.querySelector('input[name="pekerjaan"]:checked')?.value,
+                jenisLayanan: document.getElementById('jenisLayanan').value,
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value,
+                q4: document.querySelector('input[name="q4"]:checked')?.value,
+                q5: document.querySelector('input[name="q5"]:checked')?.value,
+                q6: document.querySelector('input[name="q6"]:checked')?.value,
+                q7: document.querySelector('input[name="q7"]:checked')?.value,
+                q8: document.querySelector('input[name="q8"]:checked')?.value,
+                q9: document.querySelector('input[name="q9"]:checked')?.value,
+                q10: document.querySelector('input[name="q10"]:checked')?.value,
+                q11: document.querySelector('input[name="q11"]:checked')?.value
+            };
+
+            try {
+                // --- KIRIM KE SERVER (Google Apps Script) ---
+                const response = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'simpanIKM',
+                        payload: formData
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                });
+
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Survey Berhasil Dikirim!';
+                    btn.style.background = '#4CAF50';
+                    document.getElementById('formIKM').reset();
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                        // Kembali ke beranda setelah sukses
+                        window.location.href = "index.html"; 
+                    }, 2500);
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (err) {
+                alert('Terjadi kesalahan: ' + err.message);
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
