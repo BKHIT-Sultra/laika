@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publikasi - Laika BKHIT Sulawesi Tenggara</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --laika-purple: #6C5CE7; --laika-blue: #2196F3; --laika-green: #4CAF50; --bg-body: #f0f4f9; --text-dark: #1c1c1e; --text-muted: #86868b; --border-glass: rgba(255, 255, 255, 0.7); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body { min-height: 100vh; background: url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover; background-size: cover; position: relative; padding: 40px 20px; background-color: #f0f4f9; }
+        body::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(6px); z-index: 0; }
+
+        .page-container { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+        .page-title { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--laika-purple) 0%, var(--laika-blue) 70%, var(--laika-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
+
+        .back-home-btn { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: 13px; color: var(--text-dark); text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.04); transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .back-home-btn:hover { background: #ffffff; transform: translateY(-2px); border-color: var(--laika-purple); }
+
+        .tabs-container { display: flex; gap: 10px; margin-bottom: 30px; background: rgba(255, 255, 255, 0.5); padding: 8px; border-radius: 50px; backdrop-filter: blur(12px); border: 1px solid var(--border-glass); justify-content: center; flex-wrap: wrap; }
+        .tab-btn { background: transparent; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 600; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .tab-btn:hover { color: var(--laika-purple); }
+        .tab-btn.active { background: white; color: var(--laika-purple); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.15); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- STYLING FILTER BAR --- */
+        .filter-bar {
+            display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(8px);
+            padding: 12px 16px; border-radius: 16px; border: 1px solid var(--border-glass);
+            align-items: center;
+        }
+        .filter-bar i { color: var(--text-muted); font-size: 14px; }
+        .filter-input {
+            flex: 1; min-width: 150px; padding: 8px 14px; border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 30px; font-size: 13px; outline: none; background: rgba(255,255,255,0.7);
+            transition: 0.3s; font-family: 'Poppins';
+        }
+        .filter-input:focus { border-color: var(--laika-purple); background: white; box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
+        .filter-select {
+            padding: 8px 14px; border: 1px solid rgba(0,0,0,0.08); border-radius: 30px;
+            font-size: 13px; outline: none; background: rgba(255,255,255,0.7); cursor: pointer;
+            min-width: 120px; font-family: 'Poppins';
+        }
+        .filter-select:focus { border-color: var(--laika-purple); background: white; }
+
+        /* --- STYLING TABEL REGULASI --- */
+        .table-wrapper {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06);
+            overflow-x: auto;
+        }
+
+        .publikasi-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 700px;
+        }
+        .publikasi-table thead th {
+            text-align: left; padding: 14px 12px; font-weight: 700; color: var(--text-dark);
+            border-bottom: 2px solid rgba(0,0,0,0.06); text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;
+        }
+        .publikasi-table tbody tr { border-bottom: 1px solid rgba(0,0,0,0.04); transition: 0.2s; }
+        .publikasi-table tbody tr:last-child { border-bottom: none; }
+        .publikasi-table tbody tr:hover { background: rgba(108, 92, 231, 0.04); }
+        .publikasi-table tbody td { padding: 16px 12px; vertical-align: middle; }
+
+        .col-judul { min-width: 200px; }
+        .col-judul h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .col-judul .deskripsi-td { font-size: 12px; color: #666; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .col-judul .nama-file-td { font-size: 12px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+        
+        .col-tanggal { font-size: 13px; white-space: nowrap; color: var(--text-muted); }
+        .col-aksi { white-space: nowrap; }
+
+        /* --- STYLING KARTU LAYANAN PUBLIK --- */
+        .grid-container {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); 
+            gap: 16px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 8px 20px -8px rgba(0,0,0,0.06);
+            transition: 0.4s; display: flex; flex-direction: column;
+        }
+        .glass-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px -10px rgba(108,92,231,0.12); }
+        .glass-card h3 { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .glass-card .date { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        .glass-card p { font-size: 12px; font-weight: 400; color: #444; line-height: 1.5; margin-bottom: 12px; flex-grow: 1; }
+        .glass-card .footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.06); }
+
+        /* --- TAG & BADGE --- */
+        .tag { padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; display: inline-block; white-space: nowrap; }
+        .tag-blue { background: var(--laika-blue); }
+        .tag-purple { background: var(--laika-purple); }
+        .tag-green { background: var(--laika-green); }
+        .tag-orange { background: #FF9800; }
+        .tag-red { background: #f44336; }
+        .tag-cyan { background: #00BCD4; }
+        .tag-brown { background: #795548; }
+
+        .status-badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+        .status-badge.belum { background: #ffe0b2; color: #e65100; }
+        .status-badge.diproses { background: #bbdefb; color: #0d47a1; }
+        .status-badge.selesai { background: #c8e6c9; color: #1b5e20; }
+
+        .btn-lihat { background: rgba(33, 150, 243, 0.1); color: var(--laika-blue); border: 1px solid rgba(33, 150, 243, 0.2); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.3s; }
+        .btn-lihat:hover { background: var(--laika-blue); color: white; transform: translateY(-2px); }
+
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .tabs-container { justify-content: flex-start; border-radius: 12px; }
+            .tab-btn { padding: 10px 16px; flex: 1; justify-content: center; }
+            .grid-container { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">Informasi & Publikasi</h1>
+            <a href="index.html" class="back-home-btn"><i class="fas fa-home"></i> Kembali ke Beranda</a>
+        </div>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="bukaTab(event, 'tab-regulasi')"><i class="fas fa-book"></i> Regulasi Terbaru</button>
+            <button class="tab-btn" onclick="bukaTab(event, 'tab-layanan')"><i class="fas fa-people-group"></i> Progress Layanan</button>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- TAB 1: REGULASI TERBARU (Dengan Search & Filter)       -->
+        <!-- ====================================================== -->
+        <div id="tab-regulasi" class="tab-content active">
+            <!-- FILTER REGULASI -->
+            <div class="filter-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchRegulasi" class="filter-input" placeholder="Cari judul regulasi..." oninput="applyRegulasiFilter()">
+                <i class="fas fa-filter" style="margin-left: 8px;"></i>
+                <select id="filterKategoriRegulasi" class="filter-select" onchange="applyRegulasiFilter()">
+                    <option value="">Semua Kategori</option>
+                    <!-- Dropdown akan diisi otomatis oleh JS -->
+                </select>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="publikasi-table" id="tabelRegulasi">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th class="col-judul">Judul & Deskripsi</th>
+                            <th style="width: 150px;">Kategori</th>
+                            <th style="width: 120px;">Tanggal</th>
+                            <th style="width: 130px; text-align:center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="containerRegulasi">
+                        <tr><td colspan="5" style="text-align:center; padding:40px 0; color:var(--text-muted);">⏳ Memuat regulasi...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- TAB 2: PROGRESS LAYANAN (Dengan Search & Filter)       -->
+        <!-- ====================================================== -->
+        <div id="tab-layanan" class="tab-content">
+            <!-- FILTER LAYANAN -->
+            <div class="filter-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchLayanan" class="filter-input" placeholder="Cari pemohon atau deskripsi..." oninput="applyLayananFilter()">
+                
+                <i class="fas fa-filter" style="margin-left: 8px;"></i>
+                <select id="filterStatusLayanan" class="filter-select" onchange="applyLayananFilter()">
+                    <option value="">Semua Status</option>
+                    <option value="belum respon">Belum Respon</option>
+                    <option value="diproses">Diproses</option>
+                    <option value="selesai">Selesai</option>
+                </select>
+
+                <select id="filterJenisLayanan" class="filter-select" onchange="applyLayananFilter()">
+                    <option value="">Semua Jenis</option>
+                    <!-- Dropdown akan diisi otomatis oleh JS -->
+                </select>
+            </div>
+
+            <div id="containerLayanan" class="grid-container">
+                <p style="text-align:center; width:100%; color:var(--text-muted);">⏳ Memuat layanan publik...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allData = []; // Variabel global untuk menyimpan semua data yang diambil dari backend
+
+        function bukaTab(evt, tabId) {
+            let tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) { tabContents[i].classList.remove("active"); }
+            let tabBtns = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabBtns.length; i++) { tabBtns[i].classList.remove("active"); }
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            ScrollTrigger.refresh();
+            
+            // Jalankan animasi GSAP ulang untuk kartu layanan jika tab layanan dibuka
+            if(tabId === 'tab-layanan') {
+                setTimeout(() => {
+                    const cards = document.querySelectorAll('#tab-layanan .glass-card');
+                    cards.forEach((card, idx) => {
+                        gsap.fromTo(card, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: idx * 0.05 });
+                    });
+                }, 100);
+            }
+        }
+
+        function bukaFile(url) {
+            if (!url || url === '#' || url === '-') { alert("File tidak tersedia atau link rusak."); return; }
+            window.open(url, '_blank');
+        }
+
+        document.addEventListener("DOMContentLoaded", async function() {
+            // 👇👇 GANTI DENGAN URL WEB APP MILIK ANDA YANG ASLI 👇👇
+            const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxgzcvqmo83AvBZONjFVjbynm-RAp8iF9X7kWKu9l0YiSwAP-R_-uRX2U919TGkbMD1/exec";
+            
+            try {
+                // Memanggil backend Apps Script menggunakan parameter GET action=ambilDataPublikasi
+                const response = await fetch(`${GAS_API_URL}?action=ambilDataPublikasi`);
+                
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const res = await response.json();
+                
+                if (res.status === 'success') {
+                    // Jika sukses, lempar datanya ke fungsi tampilkanData yang sudah ada
+                    tampilkanData(res.data);
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (err) {
+                console.error("Gagal mengambil data:", err);
+                document.getElementById('containerRegulasi').innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Terjadi kesalahan jaringan atau data tidak ditemukan.</td></tr>';
+                document.getElementById('containerLayanan').innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted);">Terjadi kesalahan jaringan atau data tidak ditemukan.</p>';
+            }
+        });
+
+        function getKategoriClass(kategori) {
+            const map = {
+                'Undang-undang & Peraturan Pemerintah': 'tag-purple',
+                'Peraturan Badan': 'tag-blue',
+                'Edaran': 'tag-green',
+                'SOP': 'tag-orange',
+                'Aturan lain': 'tag-red',
+                'Informasi Karantina': 'tag-cyan'
+            };
+            return map[kategori] || 'tag-blue';
+        }
+
+        // --- FUNGSI UTAMA MENERIMA DATA DARI BACKEND ---
+        function tampilkanData(data) {
+            allData = data; // Simpan data ke variabel global
+            
+            // 1. Isi dropdown filter berdasarkan data yang ada
+            populateFilterDropdowns(allData);
+            
+            // 2. Render kedua tab dengan filter default (semua data)
+            applyRegulasiFilter();
+            applyLayananFilter();
+        }
+
+        // --- FUNGSI MENGISI DROPDOWN FILTER SECARA DINAMIS ---
+        function populateFilterDropdowns(data) {
+            // Filter Dropdown Kategori Regulasi
+            const kategoriSet = new Set();
+            data.filter(item => item.jenis === 'Regulasi').forEach(item => {
+                if(item.kategori) kategoriSet.add(item.kategori);
+            });
+            const kategoriSelect = document.getElementById('filterKategoriRegulasi');
+            // Hapus opsi lama selain "Semua Kategori"
+            while(kategoriSelect.options.length > 1) kategoriSelect.remove(1);
+            kategoriSet.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k;
+                opt.textContent = k;
+                kategoriSelect.appendChild(opt);
+            });
+
+            // Filter Dropdown Jenis Layanan
+            const jenisSet = new Set();
+            data.filter(item => item.jenis !== 'Regulasi').forEach(item => {
+                if(item.jenis) jenisSet.add(item.jenis);
+            });
+            const jenisSelect = document.getElementById('filterJenisLayanan');
+            while(jenisSelect.options.length > 1) jenisSelect.remove(1);
+            jenisSet.forEach(j => {
+                const opt = document.createElement('option');
+                opt.value = j;
+                opt.textContent = j;
+                jenisSelect.appendChild(opt);
+            });
+        }
+
+        // ======================================================
+        // RENDER & FILTER REGULASI
+        // ======================================================
+        function renderRegulasi(dataToRender) {
+            const containerReg = document.getElementById('containerRegulasi');
+            containerReg.innerHTML = '';
+            
+            if (dataToRender.length === 0) {
+                containerReg.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px 0; color:var(--text-muted);">Tidak ada regulasi yang sesuai dengan filter.</td></tr>';
+                return;
+            }
+
+            dataToRender.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                const linkFile = item.fileUrl && item.fileUrl !== '-' ? item.fileUrl : null;
+                const btnLihat = linkFile 
+                    ? `<button class="btn-lihat" onclick="bukaFile('${linkFile}')"><i class="fas fa-eye"></i> Lihat File</button>` 
+                    : `<span style="font-size:12px; color:#888; font-weight:500;">-</span>`;
+                const colorClass = getKategoriClass(item.kategori);
+
+                tr.innerHTML = `
+                    <td style="text-align:center; font-weight:600; color:var(--text-muted);">${index + 1}</td>
+                    <td class="col-judul">
+                        <h4>${item.judul}</h4>
+                        <div class="deskripsi-td">${item.deskripsi}</div>
+                    </td>
+                    <td><span class="tag ${colorClass}">${item.kategori || 'Regulasi'}</span></td>
+                    <td class="col-tanggal"><i class="far fa-calendar-alt" style="margin-right:5px;"></i> ${item.tanggal}</td>
+                    <td class="col-aksi" style="text-align:center;">${btnLihat}</td>
+                `;
+                containerReg.appendChild(tr);
+            });
+        }
+
+        function applyRegulasiFilter() {
+            const searchText = document.getElementById('searchRegulasi').value.toLowerCase().trim();
+            const kategoriFilter = document.getElementById('filterKategoriRegulasi').value;
+
+            // Ambil data regulasi saja dari allData
+            let filtered = allData.filter(item => item.jenis === 'Regulasi');
+
+            // Filter berdasarkan teks pencarian (judul & deskripsi)
+            if (searchText) {
+                filtered = filtered.filter(item => 
+                    item.judul.toLowerCase().includes(searchText) || 
+                    item.deskripsi.toLowerCase().includes(searchText)
+                );
+            }
+
+            // Filter berdasarkan kategori
+            if (kategoriFilter) {
+                filtered = filtered.filter(item => item.kategori === kategoriFilter);
+            }
+
+            renderRegulasi(filtered);
+        }
+
+        // ======================================================
+        // RENDER & FILTER LAYANAN PUBLIK
+        // ======================================================
+        function renderLayanan(dataToRender) {
+            const containerLay = document.getElementById('containerLayanan');
+            containerLay.innerHTML = '';
+            
+            if (dataToRender.length === 0) {
+                containerLay.innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted); padding:40px 0;">Tidak ada layanan yang sesuai dengan filter.</p>';
+                return;
+            }
+
+            dataToRender.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card';
+                
+                let statusClass = 'belum';
+                let statusLabel = item.status || 'Belum Respons';
+                if (statusLabel.toLowerCase() === 'diproses') statusClass = 'diproses';
+                else if (statusLabel.toLowerCase() === 'selesai') statusClass = 'selesai';
+
+                card.innerHTML = `
+                    <h3>${item.judul}</h3>
+                    <span class="date">📅 ${item.tanggal}</span>
+                    <p><strong>${item.pemohon}</strong><br>${item.deskripsi}</p>
+                    <div class="footer">
+                        <span class="status-badge ${statusClass}">${statusLabel}</span>
+                        <span class="tag tag-purple">${item.jenis}</span>
+                    </div>
+                `;
+                containerLay.appendChild(card);
+            });
+
+            // Re-trigger GSAP animation for cards
+            const cards = containerLay.querySelectorAll('.glass-card');
+            cards.forEach((card, idx) => {
+                gsap.fromTo(card, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: idx * 0.05 });
+            });
+        }
+
+        function applyLayananFilter() {
+            const searchText = document.getElementById('searchLayanan').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filterStatusLayanan').value;
+            const jenisFilter = document.getElementById('filterJenisLayanan').value;
+
+            // Ambil data layanan saja (bukan regulasi)
+            let filtered = allData.filter(item => item.jenis !== 'Regulasi');
+
+            // Filter berdasarkan teks pencarian (pemohon & deskripsi)
+            if (searchText) {
+                filtered = filtered.filter(item => 
+                    item.pemohon.toLowerCase().includes(searchText) || 
+                    item.deskripsi.toLowerCase().includes(searchText)
+                );
+            }
+
+            // Filter berdasarkan status
+            if (statusFilter) {
+                filtered = filtered.filter(item => item.status.toLowerCase() === statusFilter);
+            }
+
+            // Filter berdasarkan jenis layanan
+            if (jenisFilter) {
+                filtered = filtered.filter(item => item.jenis === jenisFilter);
+            }
+
+            renderLayanan(filtered);
+        }
+    </script>
+</body>
+</html>
