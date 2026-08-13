@@ -1371,6 +1371,30 @@
         </div>
     </div>   <!-- TAMBAHKAN PENUTUP INI -->
 
+    <!-- MODAL KONFIRMASI HAPUS SDM -->
+    <div class="modal-overlay" id="modalHapusSDM">
+        <div class="modal-card glass-panel" style="max-width: 450px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; border-bottom: none; margin-bottom: 0;">
+                <h2 style="font-size: 24px; margin-top: 10px;">Konfirmasi Hapus</h2>
+            </div>
+            <div style="padding: 0 15px;">
+                <i class="fas fa-trash-can modal-icon-danger"></i>
+                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 25px; line-height: 1.6;">
+                    Apakah Anda yakin ingin menghapus kegiatan ini?<br>
+                    <strong>Data yang dihapus tidak dapat dikembalikan.</strong>
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn-upload" onclick="closeModal('modalHapusSDM')" style="background: rgba(0,0,0,0.05); color: var(--text-dark); box-shadow: none; flex:1;">
+                        Batal
+                    </button>
+                    <button class="btn-upload btn-danger" onclick="confirmHapusSDM()" style="flex:1;">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DETAIL PPID -->
     <div class="modal-overlay" id="modalDetailPPID">
         <div class="modal-card glass-panel" style="max-width: 700px;">
@@ -1414,6 +1438,7 @@
         let ikmCurrentPage = 1;
     
         let hapusTimestampTemp = null;
+        let sdmHapusIdTemp = null;
 
         // ============================================================
         // FUNGSI KOMUNIKASI DENGAN GOOGLE APPS SCRIPT (GAS)
@@ -2334,13 +2359,40 @@
             }
         }
     
-        async function sdmHapusKegiatanSDM(id) {
-            if (!confirm('Apakah Anda yakin ingin menghapus kegiatan ini?')) return;
+        // Fungsi untuk membuka pop-up modal hapus
+        function sdmHapusKegiatanSDM(id) {
+            sdmHapusIdTemp = id;
+            openModal('modalHapusSDM');
+        }
+    
+        // Fungsi untuk mengeksekusi penghapusan saat tombol merah "Hapus" ditekan
+        async function confirmHapusSDM() {
+            if (!sdmHapusIdTemp) return;
+            
+            const btn = document.querySelector('#modalHapusSDM .btn-danger');
+            const originalHTML = btn.innerHTML;
+            
+            // Ubah tombol jadi loading
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghapus...'; 
+            btn.disabled = true;
+    
             try {
-                const res = await fetchGasAPI('hapusKegiatan', { id: id });
-                if(res.status === 'success') sdmLoadKegiatan();
-                else throw new Error(res.message);
-            } catch(err) { sdmTampilkanNotifikasi(err.message, 'error'); }
+                const res = await fetchGasAPI('hapusKegiatan', { id: sdmHapusIdTemp });
+                if(res.status === 'success') {
+                    closeModal('modalHapusSDM'); 
+                    sdmHapusIdTemp = null; 
+                    sdmLoadKegiatan(); // Refresh tabel setelah berhasil hapus
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch(err) { 
+                closeModal('modalHapusSDM');
+                sdmTampilkanNotifikasi(err.message, 'error'); 
+            }
+            
+            // Kembalikan tombol seperti semula
+            btn.innerHTML = originalHTML; 
+            btn.disabled = false;
         }
     
         function sdmBukaFormSelesai(id) {
