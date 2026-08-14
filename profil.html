@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Laika BKHIP Sulawesi Tenggara</title>
+    <!-- GSAP & Plugins & Google Fonts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- TAMBAHAN: Leaflet CSS & JS untuk Peta Interaktif -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* --- GAYA GLOBAL SAMA DENGAN HALAMAN UTAMA --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            background-color: #f0f4f9;
+            color: #1c1c1e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- HEADER --- */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 40px; position: absolute; top: 0; left: 0; width: 100%;
+            background: transparent; z-index: 20;
+        }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .header-logo-img { height: 50px; width: auto; }
+        .header-long-title {
+            display: flex; flex-direction: column; font-size: 14px; font-weight: 600; color: #1a2d5c; line-height: 1.3;
+        }
+        .header-long-title .title-line-2 { font-weight: 700; color: #1a2d5c; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 6px 16px; border-radius: 30px;
+            font-weight: 600; font-size: 13px; color: #1a2d5c;
+            transition: all 0.3s; cursor: pointer; text-decoration: none;
+        }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        .nav-btn.active { background: #6C5CE7; color: #fff; }
+
+        /* --- HERO KECIL UNTUK HALAMAN PROFIL --- */
+        .hero-small {
+            background: #f0f4f9 url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover;
+            position: relative; 
+            min-height: 60vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center; 
+            text-align: center; 
+            padding: 30px 20px 300px 20px;
+        }
+        .hero-small::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 35%, rgba(255,255,255,0) 60%);
+            z-index: 1;
+        }
+        .hero-small h1 {
+            position: relative; z-index: 2;
+            font-size: 36px; font-weight: 800; color: #1a2d5c;
+        }
+        .hero-small p {
+            position: relative; z-index: 2;
+            font-size: 16px; color: #444; margin-top: 8px;
+        }
+
+        /* --- KONTEN UTAMA PROFIL --- */
+        .profil-container {
+            max-width: 1740px;
+            width: 100%;
+            margin: -350px auto 50px auto;
+            padding: 0 40px;
+            position: relative; 
+            z-index: 5; 
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .profil-wrapper {
+            display: flex; 
+            gap: 30px; 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 28px; 
+            padding: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            min-height: 500px;
+            width: 100%;
+            max-width: 1400px;
+        }
+        /* Sidebar */
+        .profil-sidebar {
+            width: 240px; flex-shrink: 0;
+            border-right: 1px solid rgba(0,0,0,0.05); padding-right: 25px;
+        }
+        .profil-sidebar-title {
+            font-size: 12px; font-weight: 700; text-transform: uppercase; color: #999;
+            letter-spacing: 1px; margin-bottom: 20px;
+        }
+        .profil-menu-item {
+            padding: 12px 16px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 14px; font-weight: 600; font-size: 14px; color: #1a2d5c;
+        }
+        .profil-menu-item:hover { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .profil-menu-item.active { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border-left: 4px solid #6C5CE7; }
+        .profil-menu-item i { width: 20px; text-align: center; color: #6C5CE7; }
+
+        /* Konten */
+        .profil-content {
+            flex: 1; padding-left: 25px; overflow-y: auto; max-height: 600px;
+        }
+        .profil-judul {
+            font-size: 28px; font-weight: 700; color: #1a2d5c;
+            margin-bottom: 20px; padding-bottom: 12px; border-bottom: 4px solid #6C5CE7; display: inline-block;
+        }
+        .profil-teks { font-size: 15px; line-height: 1.8; color: #333; }
+        .profil-teks p { margin-bottom: 15px; }
+        .profil-teks ul { padding-left: 20px; margin-bottom: 15px; }
+
+        /* ========================================================== */
+        /* PERBAIKAN STRUKTUR ORGANISASI                              */
+        /* ========================================================== */
+        
+        /* --- GAYA AVATAR DI ATAS (Kepala & KTU) --- */
+        .org-node-top {
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            /* TAMBAHKAN: Margin bawah untuk ruang */
+            margin-bottom: 30px;
+        }
+        .org-avatar-top {
+            width: 90px; height: 90px; border-radius: 50%; border: 4px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 24px; color: #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); position: relative; z-index: 2;
+            background: #6C5CE7; overflow: hidden;
+        }
+        .org-avatar-top img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; border-radius: 50%;
+        }
+        .org-label-top {
+            background: #fff; padding: 12px 20px; border-radius: 30px; z-index: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;
+            border: 2px solid #6C5CE7; min-width: 180px;
+            /* PERBAIKI: Margin atas disesuaikan */
+            margin-top: -10px;
+        }
+        .org-label-top .jabatan { font-weight: 700; font-size: 14px; color: #6C5CE7; line-height: 1.3; }
+        .org-label-top .nama { font-size: 12px; color: #555; line-height: 1.2; margin-top: 2px; }
+
+        /* --- GAYA KARTU BAWAH (Avatar Kiri - Balok Kanan) --- */
+        .org-pill-wrapper {
+            display: flex; align-items: center; position: relative; width: 100%; max-width: 350px; margin: 10px auto;
+            justify-content: flex-start;
+        }
+        .org-pill-avatar {
+            width: 58px; height: 58px; border-radius: 50%; border: 3px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 18px; color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: relative; z-index: 2; flex-shrink: 0;
+            margin-right: -18px; overflow: hidden;
+        }
+        .org-pill-avatar img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; border-radius: 50%;
+        }
+        .org-pill-label {
+            border-radius: 40px; padding: 10px 22px 10px 34px; color: #fff;
+            display: flex; flex-direction: column; text-align: left; flex: 1;
+            min-width: 150px; position: relative; z-index: 1;
+        }
+        .org-pill-label .jabatan { font-weight: 700; font-size: 14px; line-height: 1.3; }
+        .org-pill-label .nama { font-weight: 400; font-size: 12px; opacity: 0.9; line-height: 1.2; margin-top: 2px; }
+
+        /* --- WARNA UNGU (Pimpinan) --- */
+        .avatar-purple { background: #6C5CE7; }
+        .label-purple { background: #6C5CE7; }
+
+        /* --- WARNA BIRU (Tim Kerja) --- */
+        .avatar-blue { background: #2196F3; }
+        .label-blue { background: #2196F3; }
+
+        /* --- WARNA HIJAU (Satpel) --- */
+        .avatar-green { background: #4CAF50; }
+        .label-green { background: #4CAF50; }
+
+        /* --- KONTENER UTAMA BAGAN --- */
+        .org-container {
+            position: relative; width: 100%; max-width: 1000px; margin: 0 auto; padding-top: 10px;
+        }
+        
+        /* HAPUS/KOMENTARI: Garis SVG statis ini karena menyebabkan ketidaksejajaran responsif */
+        /*
+        .org-lines {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+        */
+        
+        /* PERBAIKI: Baris Atas menggunakan Flex vertikal, bukan posisi absolut */
+        .org-top-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: auto; /* Alih-alih tinggi keras */
+            padding-top: 20px;
+            position: relative;
+        }
+
+        /* TAMBAHKAN: Garis vertikal CSS baru */
+        .org-line-vertical-small {
+            width: 2px; height: 30px; background: #6C5CE7;
+            margin: -25px 0 15px 0; /* Sesuaikan margin untuk memposisikan di antara AA dan K */
+        }
+        .org-line-vertical-big {
+            width: 2px; height: 120px; background: #6C5CE7;
+            margin: -25px 0 0 0; /* Sesuaikan margin */
+        }
+        /* Alih-alih .pos-aa dan .pos-k yang lama */
+        .org-node-top.pos-aa, .org-node-top.pos-k {
+            position: static;
+            transform: none;
+        }
+
+        /* Baris Bawah (CSS Grid 2 Kolom Kokoh) */
+        .org-bottom-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+            max-width: 900px; margin: 0 auto;
+            position: relative; z-index: 2;
+            /* PERBAIKI: Padding atas dikurangi agar sejajar dengan garis baru */
+            padding-top: 20px;
+        }
+        .org-column {
+            display: flex; flex-direction: column; align-items: center; width: 100%;
+        }
+        .org-column-header {
+            width: 80%; border-top: 2px solid #6C5CE7; padding-top: 12px; margin-bottom: 15px;
+            text-align: center; font-weight: 700; font-size: 14px; color: #1a2d5c; text-transform: uppercase;
+        }
+
+        /* --- RESPONSIVE PERBAIKAN --- */
+        @media (max-width: 768px) {
+            /* PERBAIKI: Penempatan responsif Kepala & KTU */
+            .org-top-row { height: auto; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 0; }
+            .org-line-vertical-small { display: none; } /* Sembunyikan garis kecil responsif */
+            .org-line-vertical-big { width: 2px; height: 50px; margin: 0; } /* Sesuaikan garis besar responsif */
+            
+            .org-label-top { margin-top: -10px; }
+            .org-node-top { margin-bottom: 10px; }
+            
+            /* Sembunyikan garis SVG yang lama */
+            .org-lines { display: none; }
+            .org-bottom-row { grid-template-columns: 1fr; gap: 30px; padding-top: 20px; }
+            .org-column-header { width: 100%; }
+            .org-pill-wrapper { max-width: 100%; justify-content: flex-start; }
+        }
+
+        /* --- CSS KHUSUS UNTUK PETA LEAFLET --- */
+        .map-container {
+            margin-top: 20px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 1;
+        }
+        #map { height: 400px; width: 100%; background: #e5e5e5; }
+        
+        .leaflet-custom-marker {
+            display: flex; justify-content: center; align-items: center;
+            background: #6C5CE7; border: 2px solid #fff; border-radius: 50%;
+            width: 32px; height: 32px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: #fff; font-size: 14px;
+        }
+        .leaflet-custom-marker.utama {
+            background: #d32f2f; width: 40px; height: 40px; font-size: 18px;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.5);
+        }
+        .leaflet-popup-content-wrapper { border-radius: 12px !important; font-family: 'Poppins', sans-serif !important; }
+        .leaflet-popup-content { font-size: 14px; font-weight: 600; color: #1a2d5c; }
+
+        /* --- DAFTAR 9 TITIK (ALAMAT LENGKAP) --- */
+        .gps-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .gps-item {
+            background: rgba(255,255,255,0.8); padding: 12px 16px; border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.03); display: flex; align-items: flex-start; gap: 12px;
+        }
+        .gps-item.utama { background: rgba(211, 47, 47, 0.05); border: 1px solid rgba(211, 47, 47, 0.2); }
+        .gps-item.utama i { color: #d32f2f; }
+        .gps-item i { color: #6C5CE7; font-size: 18px; margin-top: 2px; }
+        .gps-item .detail { display: flex; flex-direction: column; }
+        .gps-item .detail .label { font-size: 12px; font-weight: 600; color: #1a2d5c; }
+        .gps-item .detail .desc { font-size: 12px; color: #555; line-height: 1.4; }
+
+        /* --- FOOTER --- */
+        footer {
+            width: 100%; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px; color: #1a2d5c; font-weight: 500;
+            border-top: 1px solid rgba(0,0,0,0.05); margin-top: auto;
+        }
+        footer i { color: #6C5CE7; margin-right: 5px; }
+
+        /* --- RESPONSIVE UMUM --- */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 12px; padding: 12px 20px; }
+            .header-left { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .header-right { flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+            .profil-wrapper { flex-direction: column; padding: 20px; }
+            .profil-sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 20px; margin-bottom: 20px; }
+            .profil-content { padding-left: 0; max-height: none; }
+            .hero-small h1 { font-size: 28px; }
+            .gps-list { grid-template-columns: 1fr; }
+            #map { height: 300px; }
+        }
+        @media (max-width: 480px) {
+            .profil-container { padding: 0 15px; }
+            #map { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <img src="https://drive.google.com/thumbnail?id=1u7vpxKfSMoAWEJzb5IEPVGuR3CHEBaWb&sz=s0" alt="Logo BKHIT" class="header-logo-img">
+            <div class="header-long-title">
+                <span class="title-line-1">Balai Karantina Hewan, Ikan dan Tumbuhan</span>
+                <span class="title-line-2">Sulawesi Tenggara</span>
+            </div>
+            <img src="https://drive.google.com/thumbnail?id=1e8Ma5eJdHOJnJKERNkURpwpjdA_gcNsb&sz=s0" alt="Logo BKHIP" class="header-logo-img" style="height:50px;">
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="nav-btn">Beranda</a>
+            <a href="profil.html" class="nav-btn active"><i class="fas fa-user"></i> Profil</a>
+            <!-- Note: Tombol Login sengaja dihilangkan jika halaman ini dapat diakses publik dari index, atau arahkan ke index.html -->
+            <a href="index.html" class="nav-btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </div>
+    </header>
+
+    <!-- HERO KECIL -->
+    <section class="hero-small">
+        <h1>Profil BKHIT Sultra</h1>
+        <p>Balai Karantina Hewan, Ikan dan Tumbuhan Sulawesi Tenggara</p>
+    </section>
+
+    <!-- KONTEN PROFIL -->
+    <div class="profil-container">
+        <div class="profil-wrapper">
+            <!-- Sidebar Kiri -->
+            <div class="profil-sidebar">
+                <div class="profil-sidebar-title"><i class="fas fa-list-ul"></i> Menu Profil</div>
+                <div class="profil-menu-item active" onclick="ubahKonten('tentang', this)">
+                    <i class="fas fa-info-circle"></i> Tentang
+                </div>
+                <div class="profil-menu-item" onclick="ubahKonten('visi-misi', this)">
+                    <i class="fas fa-bullseye"></i> Visi & Misi
+                </div>
+                <div class="profil-menu-item" onclick="ubahKonten('struktur', this)">
+                    <i class="fas fa-sitemap"></i> Struktur Organisasi
+                </div>
+                <div class="profil-menu-item" onclick="ubahKonten('maklumat', this)">
+                    <i class="fas fa-file-contract"></i> Maklumat Layanan
+                </div>
+            </div>
+            <!-- Konten Kanan -->
+            <div class="profil-content" id="profilKonten">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-left"><i class="fas fa-bullseye"></i> Melindungi Negeri,</div>
+        <div class="footer-right">&copy; 2026 BKHIT Sulawesi Tenggara. All Rights Reserved.</div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Data konten untuk setiap menu
+        const kontenData = {
+            'tentang': `
+                <div class="profil-judul">Tentang Kami</div>
+                <div class="profil-teks">
+                    <p><strong>BKHIT Sulawesi Tenggara</strong> adalah Unit Pelaksana Teknis (UPT) di bawah Badan Karantina Indonesia (Barantin) yang bertugas melaksanakan tindakan karantina hewan, ikan, dan tumbuhan di wilayah Sulawesi Tenggara.</p>
+                    <p>Kami berkomitmen untuk melindungi sumber daya alam hayati dari ancaman hama dan penyakit karantina, serta mendukung kelancaran perdagangan hasil pertanian, perikanan, dan peternakan yang aman, sehat, dan utuh.</p>
+                    
+                    <h4 style="margin-top: 25px; margin-bottom: 10px; color: #1a2d5c; font-size: 18px; font-weight: 700;">
+                        <i class="fas fa-map-marker-alt" style="color: #6C5CE7;"></i> Lokasi Kantor & Satpel
+                    </h4>
+                    
+                    <div class="map-container">
+                        <div id="map"></div>
+                    </div>
+
+                    <div class="gps-list">
+                        <!-- Kantor Induk (Utama) -->
+                        <div class="gps-item utama">
+                            <i class="fas fa-home"></i>
+                            <div class="detail"><span class="label">Kantor Induk BKHIT Sultra</span><span class="desc">Puuwatu, Kec. Puuwatu, Kota Kendari, Sulawesi Tenggara 93114</span></div>
+                        </div>
+                        
+                        <!-- 8 Satpel -->
+                        <div class="gps-item">
+                            <i class="fas fa-plane"></i>
+                            <div class="detail"><span class="label">Bandara Betoambari</span><span class="desc">Jl. Dayanu Ikhsanuddin, Katobengke, Kec. Betoambari, Kota Bau-Bau, Sulawesi Tenggara 93721</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-plane"></i>
+                            <div class="detail"><span class="label">Bandara Halu Oleo</span><span class="desc">Jl. Poros Bandara Haluoleo, Ambaipua, Kec. Ranomeeto, Kabupaten Konawe Selatan, Sulawesi Tenggara 93871</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-ship"></i>
+                            <div class="detail"><span class="label">Pelabuhan Laut Kendari</span><span class="desc">Jl. Konggoasa No.1-10, Kandai, Kec. Kendari, Kota Kendari, Sulawesi Tenggara 93127</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-ship"></i>
+                            <div class="detail"><span class="label">Pelabuhan Laut Kolaka</span><span class="desc">Jl. Dermaga, Kabupaten Kolaka, Sulawesi Tenggara</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-ship"></i>
+                            <div class="detail"><span class="label">Pelabuhan Laut Raha Muna</span><span class="desc">Jl. By Pass Raha, Kabupaten Muna, Sulawesi Tenggara 93611</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-building"></i>
+                            <div class="detail"><span class="label">Pos Layanan Kantor Pos</span><span class="desc">Jl. Dr. Sam Ratulangi No.79, Korumba, Kec. Mandonga, Kota Kendari, Sulawesi Tenggara 93000</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-ship"></i>
+                            <div class="detail"><span class="label">Pos Layanan Pelabuhan Tobaku</span><span class="desc">Pelabuhan Tobaku - Katoi, Kec. Katoi, Kabupaten Kolaka Utara, Sulawesi Tenggara 93957</span></div>
+                        </div>
+                        <div class="gps-item">
+                            <i class="fas fa-ship"></i>
+                            <div class="detail"><span class="label">Pelabuhan Laut Wanci</span><span class="desc">Pelabuhan Panggulubelo Wanci - Mola Utara, Wangi-Wangi Selatan, Kabupaten Wakatobi, Sulawesi Tenggara 93795</span></div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            'visi-misi': `
+                <div class="profil-judul">Visi & Misi</div>
+                <div class="profil-teks">
+                    <h3 style="color: #6C5CE7; margin-bottom: 10px; font-size: 18px;">Visi</h3>
+                    <p>"Menjadi Karantina yang Kuat dalam Melindungi Kelestarian Sumber Daya Alam Hayati yang Memakmurkan Kehidupan Masyarakat Untuk Mewujudkan Indonesia Maju yang Berdaulat, Mandiri, dan Berkepribadian berlandaskan Gotong Royong."</p>
+                    <h3 style="color: #6C5CE7; margin-top: 30px; margin-bottom: 10px; font-size: 18px;">Misi</h3>
+                    <ul>
+                        <li>Menyelenggarakan sistem perkarantinaan yang holistik dan terintegrasi melalui kebijakan yang efektif serta layanan perkarantinaan yang profesional untuk melindungi sumber daya alam hayati.</li>
+                        <li>Membangun keterlibatan masyarakat dalam penyelenggaraan perkarantinaan.</li>
+                        <li>Membangun Tata Kelola Badan Karantina Indonesia yang bersih, efektif, dan terpercaya.</li>
+                    </ul>
+                </div>
+            `,
+            'struktur': `
+                <div class="profil-judul">Struktur Organisasi</div>
+                <div class="profil-teks">
+                    <p>Berikut adalah struktur kepengurusan Balai Karantina Hewan, Ikan dan Tumbuhan (BKHIT) Sulawesi Tenggara.</p>
+                    
+                    <div class="org-container">
+                        
+                        <!-- PERBAIKAN: HAPUS SVG LINES STATIS -->
+                        <!-- 
+                        <svg class="org-lines" viewBox="0 0 1000 600" preserveAspectRatio="none">
+                            <line x1="50" y1="155" x2="950" y2="155" stroke="#6C5CE7" stroke-width="2.5" stroke-dasharray="8,8" />
+                            <line x1="500" y1="165" x2="500" y2="600" stroke="#6C5CE7" stroke-width="2.5" stroke-dasharray="8,8" />
+                        </svg>
+                        -->
+
+                        <!-- BARIS ATAS: KEPALA BALAI & KTU -->
+                        <div class="org-top-row">
+                            <!-- Kepala Balai -->
+                            <div class="org-node-top">
+                                <div class="org-avatar-top">
+                                    <img id="img-aa" alt="Foto Kepala" />
+                                    <span id="init-aa" style="position:absolute; font-weight:800; z-index:3;">AA</span>
+                                </div>
+                                <div class="org-label-top">
+                                    <div class="jabatan">Kepala Balai</div>
+                                    <div class="nama">drh. A. Azhar</div>
+                                </div>
+                            </div>
+
+                            <!-- TAMBAHKAN: Garis Vertikal Kecil -->
+                            <div class="org-line-vertical-small"></div>
+
+                            <!-- Kepala Sub Bagian Umum (KTU) -->
+                            <div class="org-node-top">
+                                <div class="org-avatar-top">
+                                    <img id="img-k" alt="Foto KTU" />
+                                    <span id="init-k" style="position:absolute; font-weight:800; z-index:3;">K</span>
+                                </div>
+                                <div class="org-label-top">
+                                    <div class="jabatan">Kepala Sub Bagian Umum</div>
+                                    <div class="nama">Kurniaty, S.E.</div>
+                                </div>
+                            </div>
+
+                            <!-- TAMBAHKAN: Garis Vertikal Besar ke Bawah -->
+                            <div class="org-line-vertical-big"></div>
+                        </div>
+
+                        <!-- BARIS BAWAH: TIM KERJA & SATPEL -->
+                        <div class="org-bottom-row">
+                            
+                            <!-- KOLOM KIRI (BIRU) -->
+                            <div class="org-column">
+                                <div class="org-column-header">Ketua Tim Kerja</div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-blue">
+                                        <img id="img-nr" alt="NR" />
+                                        <span id="init-nr" style="position:absolute; font-weight:800; z-index:3;">NR</span>
+                                    </div>
+                                    <div class="org-pill-label label-blue">
+                                        <div class="jabatan">Karantina Hewan</div>
+                                        <div class="nama">drh. Nichlah Rifqiyah, M.Sc.</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-blue">
+                                        <img id="img-as" alt="AS" />
+                                        <span id="init-as" style="position:absolute; font-weight:800; z-index:3;">AS</span>
+                                    </div>
+                                    <div class="org-pill-label label-blue">
+                                        <div class="jabatan">Karantina Ikan</div>
+                                        <div class="nama">Amsal Sulaeman Sallolo, S.Pi</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-blue">
+                                        <img id="img-fr" alt="FR" />
+                                        <span id="init-fr" style="position:absolute; font-weight:800; z-index:3;">FR</span>
+                                    </div>
+                                    <div class="org-pill-label label-blue">
+                                        <div class="jabatan">Karantina Tumbuhan</div>
+                                        <div class="nama">Fatma Rinambo, S.P., M.P.</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-blue">
+                                        <img id="img-ar" alt="AR" />
+                                        <span id="init-ar" style="position:absolute; font-weight:800; z-index:3;">AR</span>
+                                    </div>
+                                    <div class="org-pill-label label-blue">
+                                        <div class="jabatan">Penegakan Hukum</div>
+                                        <div class="nama">Abd. Rachman, S.St.Pi., M.Pi</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KOLOM KANAN (HIJAU) -->
+                            <div class="org-column">
+                                <div class="org-column-header">Kepala Satuan Pelayanan</div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-green">
+                                        <img id="img-es" alt="ES" />
+                                        <span id="init-es" style="position:absolute; font-weight:800; z-index:3;">ES</span>
+                                    </div>
+                                    <div class="org-pill-label label-green">
+                                        <div class="jabatan">Pelabuhan Laut Kendari</div>
+                                        <div class="nama">Evendi Saka, S.P.</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-green">
+                                        <img id="img-am" alt="AM" />
+                                        <span id="init-am" style="position:absolute; font-weight:800; z-index:3;">AM</span>
+                                    </div>
+                                    <div class="org-pill-label label-green">
+                                        <div class="jabatan">Bandara Halu Oleo</div>
+                                        <div class="nama">Agustina Waty Marsaoly, S.P., M.P.</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-green">
+                                        <img id="img-w" alt="W" />
+                                        <span id="init-w" style="position:absolute; font-weight:800; z-index:3;">W</span>
+                                    </div>
+                                    <div class="org-pill-label label-green">
+                                        <div class="jabatan">Bandara Betoambari</div>
+                                        <div class="nama">Wahyudi, S.ST.Pi., M.St.Pi</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-green">
+                                        <img id="img-im" alt="IM" />
+                                        <span id="init-im" style="position:absolute; font-weight:800; z-index:3;">IM</span>
+                                    </div>
+                                    <div class="org-pill-label label-green">
+                                        <div class="jabatan">Pelabuhan Laut Kolaka</div>
+                                        <div class="nama">drh. Ipung Mulyowidodo</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-green">
+                                        <img id="img-ms" alt="MS" />
+                                        <span id="init-ms" style="position:absolute; font-weight:800; z-index:3;">MS</span>
+                                    </div>
+                                    <div class="org-pill-label label-green">
+                                        <div class="jabatan">Pelabuhan Laut Raha</div>
+                                        <div class="nama">drh. Muhammad Sofyan</div>
+                                    </div>
+                                </div>
+                                <div class="org-pill-wrapper">
+                                    <div class="org-pill-avatar avatar-green">
+                                        <img id="img-lm" alt="LM" />
+                                        <span id="init-lm" style="position:absolute; font-weight:800; z-index:3;">LM</span>
+                                    </div>
+                                    <div class="org-pill-label label-green">
+                                        <div class="jabatan">Pelabuhan Laut Wanci</div>
+                                        <div class="nama">La Ode Mursidin, S.Pi</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <p style="margin-top: 30px; font-size: 13px; color: #999;"><i class="fas fa-info-circle"></i> *Struktur dapat berubah sesuai dengan kebijakan terbaru.</p>
+                </div>
+            `,
+            'maklumat': `
+                <div class="profil-judul">Maklumat Layanan</div>
+                <div class="profil-teks">
+                    <p>Kami berkomitmen memberikan pelayanan prima kepada masyarakat dengan prinsip:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                        <div style="background: rgba(108, 92, 231, 0.05); padding: 15px; border-radius: 12px; border-left: 4px solid #6C5CE7;">
+                            <strong style="color: #6C5CE7;">Transparan</strong>
+                            <p style="font-size: 13px; margin-top: 5px; color: #555;">Informasi publik mudah diakses tanpa diskriminasi.</p>
+                        </div>
+                        <div style="background: rgba(33, 150, 243, 0.05); padding: 15px; border-radius: 12px; border-left: 4px solid #2196F3;">
+                            <strong style="color: #2196F3;">Akuntabel</strong>
+                            <p style="font-size: 13px; margin-top: 5px; color: #555;">Setiap layanan dapat dipertanggungjawabkan.</p>
+                        </div>
+                        <div style="background: rgba(76, 175, 80, 0.05); padding: 15px; border-radius: 12px; border-left: 4px solid #4CAF50;">
+                            <strong style="color: #4CAF50;">Cepat & Tepat</strong>
+                            <p style="font-size: 13px; margin-top: 5px; color: #555;">Proses layanan efisien dan sesuai ketentuan.</p>
+                        </div>
+                        <div style="background: rgba(255, 152, 0, 0.05); padding: 15px; border-radius: 12px; border-left: 4px solid #FF9800;">
+                            <strong style="color: #FF9800;">Profesional</strong>
+                            <p style="font-size: 13px; margin-top: 5px; color: #555;">Didukung oleh SDM yang kompeten dan berintegritas.</p>
+                        </div>
+                    </div>
+                </div>
+            `
+        };
+
+        // Variabel global untuk menyimpan instance peta
+        let mapInstance = null;
+
+        // Fungsi untuk mengubah konten
+        function ubahKonten(key, element) {
+            // Update active state
+            document.querySelectorAll('.profil-menu-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            
+            const container = document.getElementById('profilKonten');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(10px)';
+            container.style.transition = 'all 0.3s ease';
+
+            setTimeout(() => {
+                container.innerHTML = kontenData[key];
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+                
+                // Jika menu yang dibuka adalah "tentang", inisialisasi peta
+                if (key === 'tentang') {
+                    if (mapInstance) {
+                        mapInstance.remove();
+                        mapInstance = null;
+                    }
+                    setTimeout(initLeafletMap, 300);
+                }
+
+                // Jika menu yang dibuka adalah "struktur", muat foto dari backend
+                if (key === 'struktur') {
+                    setTimeout(loadImagesFromBackend, 300);
+                }
+            }, 200);
+        }
+
+        // Fungsi inisialisasi peta Leaflet
+        function initLeafletMap() {
+            const mapElement = document.getElementById('map');
+            if (!mapElement) return;
+
+            mapInstance = L.map('map', {
+                center: [-4.0, 122.5],
+                zoom: 9,
+                zoomControl: true,
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 18,
+            }).addTo(mapInstance);
+
+            const lokasiLayanan = [
+                { nama: "Kantor Induk BKHIT Sultra", lat: -3.9663648286798145, lng: 122.45965698539841, icon: "fa-home", utama: true },
+                { nama: "Bandara Betoambari", lat: -5.488002, lng: 122.569782, icon: "fa-plane", utama: false },
+                { nama: "Bandara Halu Oleo", lat: -4.076707, lng: 122.416769, icon: "fa-plane", utama: false },
+                { nama: "Pelabuhan Laut Kendari", lat: -3.979189, lng: 122.610747, icon: "fa-ship", utama: false },
+                { nama: "Pelabuhan Laut Kolaka", lat: -4.056846, lng: 121.591436, icon: "fa-ship", utama: false },
+                { nama: "Pelabuhan Laut Raha Muna", lat: -4.841188, lng: 122.730927, icon: "fa-ship", utama: false },
+                { nama: "Pos Layanan Kantor Pos", lat: -3.961687, lng: 122.521303, icon: "fa-building", utama: false },
+                { nama: "Pos Layanan Pelabuhan Tobaku", lat: -3.413726, lng: 120.887850, icon: "fa-ship", utama: false },
+                { nama: "Pelabuhan Laut Wanci", lat: -5.338240, lng: 123.534058, icon: "fa-ship", utama: false }
+            ];
+
+            lokasiLayanan.forEach(lok => {
+                const markerClass = lok.utama ? 'leaflet-custom-marker utama' : 'leaflet-custom-marker';
+                const iconHtml = `<div class="${markerClass}"><i class="fas ${lok.icon}"></i></div>`;
+
+                const customIcon = L.divIcon({
+                    className: 'custom-marker-wrapper',
+                    html: iconHtml,
+                    iconSize: lok.utama ? [40, 40] : [32, 32],
+                    iconAnchor: lok.utama ? [20, 40] : [16, 32],
+                    popupAnchor: [0, -32]
+                });
+
+                const marker = L.marker([lok.lat, lok.lng], { icon: customIcon }).addTo(mapInstance);
+                marker.bindPopup(`<strong>${lok.nama}</strong>`);
+            });
+
+            const group = new L.featureGroup(lokasiLayanan.map(l => L.latLng(l.lat, l.lng)));
+            mapInstance.fitBounds(group.getBounds().pad(0.2));
+
+            setTimeout(() => {
+                if (mapInstance) {
+                    mapInstance.invalidateSize();
+                }
+            }, 500);
+        }
+
+        // --- FUNGSI MEMUAT FOTO DARI BACKEND (DENGAN HILANGKAN INISIAL) ---
+        function loadImagesFromBackend() {
+            const imageMap = [
+                // PENTING: Anda harus mengganti ID file Drive di bawah ini (yaitu '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3')
+                // dengan ID file foto yang SEBENARNYA untuk masing-masing individu.
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-aa', initId: 'init-aa' }, // Foto Kepala Balai
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-k', initId: 'init-k' },   // Foto KTU
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-nr', initId: 'init-nr' }, // Foto NR
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-as', initId: 'init-as' }, // Foto AS
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-fr', initId: 'init-fr' }, // Foto FR
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-ar', initId: 'init-ar' }, // Foto AR
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-es', initId: 'init-es' }, // Foto ES
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-am', initId: 'init-am' }, // Foto AM
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-w', initId: 'init-w' },   // Foto W
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-im', initId: 'init-im' }, // Foto IM
+                { id: '1R-ub76zjjmnDQZjNmmK_Lp0ffM2hjRT0', imgId: 'img-ms', initId: 'init-ms' }, // Foto MS
+                { id: '15Gon360K6BKj-iSVzpWE5Q6k9vNSqeM3', imgId: 'img-lm', initId: 'init-lm' }  // Foto LM
+            ];
+
+            // 👇👇 GANTI DENGAN URL WEB APP MILIK ANDA YANG ASLI 👇👇
+            const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxgzcvqmo83AvBZONjFVjbynm-RAp8iF9X7kWKu9l0YiSwAP-R_-uRX2U919TGkbMD1/exec";
+
+            imageMap.forEach(async item => {
+                try {
+                    // Memanggil backend Apps Script menggunakan parameter GET action=getImageBase64
+                    const response = await fetch(`${GAS_API_URL}?action=getImageBase64&id=${item.id}`);
+                    
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    
+                    const res = await response.json();
+                    
+                    if (res.status === 'success' && res.data) {
+                        const imgEl = document.getElementById(item.imgId);
+                        const initEl = document.getElementById(item.initId);
+                        if (imgEl && initEl) {
+                            imgEl.src = res.data;
+                            // Hapus inisial setelah foto terpasang
+                            initEl.style.display = 'none';
+                        }
+                    } else {
+                        console.warn("Gagal memuat foto untuk:", item.imgId);
+                    }
+                } catch (err) {
+                    console.error("Error memuat foto:", err);
+                }
+            });
+        }
+
+        // Tampilkan konten default saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultMenu = document.querySelector('.profil-menu-item.active');
+            if (defaultMenu) {
+                ubahKonten('tentang', defaultMenu);
+            }
+        });
+    </script>
+</body>
+</html>
