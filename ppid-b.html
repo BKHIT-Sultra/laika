@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPID Form B - Perorangan - Laika BKHIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- WARNA DASAR LAIKA --- */
+        :root {
+            --laika-purple: #6C5CE7;
+            --laika-blue: #2196F3;
+            --laika-green: #4CAF50;
+            --gradient-main: linear-gradient(135deg, var(--laika-purple) 0%, var(--laika-blue) 50%, var(--laika-green) 100%);
+            
+            --bg-body: #f0f4f9; 
+            --text-dark: #1c1c1e; 
+            --text-muted: #86868b;
+            --border-glass: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            min-height: 100vh; background-color: #f0f4f9; color: #1c1c1e;
+            background: url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover;
+            background-size: cover; position: relative; overflow-y: auto; padding: 40px 20px;
+        }
+
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 0;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .page-container {
+            position: relative; z-index: 2; max-width: 800px; margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;
+        }
+        
+        .page-title { 
+            font-size: 28px; font-weight: 700; 
+            background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .back-home-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-glass);
+            padding: 8px 20px; border-radius: 50px;
+            font-weight: 600; font-size: 13px; color: var(--text-dark);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s; 
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .back-home-btn:hover { 
+            background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); 
+            border-color: var(--laika-purple);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            border-radius: 28px; padding: 30px; margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover { box-shadow: 0 20px 60px rgba(108, 92, 231, 0.05); }
+
+        .section-title {
+            font-size: 18px; font-weight: 700; color: var(--text-dark);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
+        .section-title .num {
+            display: flex; justify-content: center; align-items: center;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--laika-purple); color: white; font-size: 14px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 6px; }
+        .form-label .required { color: #ff3b30; }
+
+        .form-control {
+            width: 100%; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 16px; font-size: 14px; transition: 0.3s; outline: none;
+            background: rgba(255,255,255,0.7); font-family: 'Poppins';
+        }
+        .form-control:focus { border-color: var(--laika-purple); background: white; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); }
+
+        textarea.form-control { resize: vertical; min-height: 80px; }
+
+        /* --- FILE UPLOAD AREA --- */
+        .file-upload-wrapper {
+            border: 2px dashed rgba(0,0,0,0.15);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .file-upload-wrapper:hover { border-color: var(--laika-purple); background: rgba(108,92,231,0.05); }
+        .file-upload-wrapper.dragover { border-color: var(--laika-blue); background: rgba(33,150,243,0.05); }
+        .file-upload-wrapper input[type="file"] {
+            position: absolute; inset: 0; opacity: 0; cursor: pointer;
+        }
+        .file-upload-wrapper i { font-size: 32px; color: rgba(0,0,0,0.15); margin-bottom: 8px; }
+        .file-upload-wrapper .file-name {
+            font-size: 13px; font-weight: 500; color: var(--text-dark); margin-top: 6px;
+            word-break: break-all;
+        }
+        .file-upload-wrapper .file-info {
+            font-size: 11px; color: var(--text-muted);
+        }
+
+        /* --- BUTTON SUBMIT --- */
+        .btn-submit {
+            width: 100%; background: var(--gradient-main); color: white;
+            border: none; padding: 16px; border-radius: 16px; font-weight: 700;
+            font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(108, 92, 231, 0.4); }
+        .btn-submit:disabled { opacity: 0.7; transform: none; cursor: not-allowed; }
+
+        @media (max-width: 768px) {
+            body { padding: 20px 10px; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .page-title { font-size: 24px; }
+            .glass-card { padding: 20px; }
+        }
+
+       /* --- TAMBAHAN CSS: UPLOAD BERHASIL (WARNA HIJAU) --- */
+        .file-upload-wrapper.uploaded {
+            border-color: #4CAF50 !important;
+            background: rgba(76, 175, 80, 0.08) !important;
+        }
+        .file-upload-wrapper.uploaded .file-icon i {
+            color: #4CAF50 !important;
+        }
+        .file-upload-wrapper.uploaded .file-name {
+            color: #4CAF50 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-file-signature" style="color: var(--laika-blue); -webkit-text-fill-color: var(--laika-blue);"></i> PPID Form B (Perorangan)</h1>
+            <a href="index.html" class="back-home-btn">
+                <i class="fas fa-home"></i> Kembali ke Beranda
+            </a>
+        </div>
+
+        <form id="formPPIDB" onsubmit="handleSubmit(event)">
+            
+            <!-- DATA PEMOHON -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span class="num"><i class="fas fa-user"></i></span> Data Pemohon
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tanggal Pengisian</label>
+                    <input type="text" id="tanggalOtomatis" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama Pemohon <span class="required">*</span></label>
+                    <input type="text" id="nama" class="form-control" placeholder="Nama lengkap sesuai KTP" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">NIK <span class="required">*</span></label>
+                    <input type="text" id="nik" class="form-control" placeholder="Nomor Induk Kependudukan (16 digit)" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Alamat Pemohon <span class="required">*</span></label>
+                    <textarea id="alamat" class="form-control" placeholder="Alamat lengkap sesuai KTP" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nomor Telepon <span class="required">*</span></label>
+                    <input type="tel" id="telepon" class="form-control" placeholder="Contoh: 08123456789" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" id="email" class="form-control" placeholder="email@contoh.com" required>
+                </div>
+            </div>
+
+            <!-- INFORMASI YANG DIMINTA -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span class="num" style="background: var(--laika-blue);">2</span> Permohonan Informasi
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Informasi yang Dibutuhkan <span class="required">*</span></label>
+                    <textarea id="informasi" class="form-control" placeholder="Jelaskan secara spesifik informasi yang ingin diperoleh" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Alasan Permintaan <span class="required">*</span></label>
+                    <textarea id="alasan" class="form-control" placeholder="Sebutkan alasan/keperluan Anda meminta informasi ini" required></textarea>
+                </div>
+            </div>
+
+            <!-- UPLOAD DOKUMEN -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span class="num" style="background: var(--laika-green);">3</span> Dokumen Pendukung
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Surat Permohonan <span class="required">*</span></label>
+                    <div class="file-upload-wrapper" id="suratWrapper">
+                        <i class="fas fa-file-pdf"></i>
+                        <div class="file-name" id="suratName">Belum ada file dipilih</div>
+                        <div class="file-info">Format: PDF, DOC, DOCX, JPG, PNG (Maks 1 MB)</div>
+                        <input type="file" id="suratFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="updateFileName(this, 'suratName')" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">KTP <span class="required">*</span></label>
+                    <div class="file-upload-wrapper" id="ktpWrapper">
+                        <i class="fas fa-id-card"></i>
+                        <div class="file-name" id="ktpName">Belum ada file dipilih</div>
+                        <div class="file-info">Format: JPG, PNG, PDF (Maks 1 MB)</div>
+                        <input type="file" id="ktpFile" accept=".jpg,.jpeg,.png,.pdf" onchange="updateFileName(this, 'ktpName')" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">NPWP <span class="required">*</span></label>
+                    <div class="file-upload-wrapper" id="npwpWrapper">
+                        <i class="fas fa-file-invoice"></i>
+                        <div class="file-name" id="npwpName">Belum ada file dipilih</div>
+                        <div class="file-info">Format: JPG, PNG, PDF (Maks 1 MB)</div>
+                        <input type="file" id="npwpFile" accept=".jpg,.jpeg,.png,.pdf" onchange="updateFileName(this, 'npwpName')" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Foto 4x6 <span class="required">*</span></label>
+                    <div class="file-upload-wrapper" id="fotoWrapper">
+                        <i class="fas fa-user-circle"></i>
+                        <div class="file-name" id="fotoName">Belum ada file dipilih</div>
+                        <div class="file-info">Format: JPG, PNG (Maks 1 MB)</div>
+                        <input type="file" id="fotoFile" accept=".jpg,.jpeg,.png" onchange="updateFileName(this, 'fotoName')" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                <i class="fas fa-paper-plane"></i> Kirim Permohonan
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // --- SET TANGGAL OTOMATIS ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('tanggalOtomatis').value = today.toLocaleDateString('id-ID', options);
+        });
+
+        // --- UPDATE NAMA FILE & TAMBAHKAN EFEK HIJAU ---
+        function updateFileName(input, targetId) {
+            const target = document.getElementById(targetId);
+            // Cari wrapper terdekat
+            const wrapper = input.closest('.file-upload-wrapper');
+
+            if (input.files && input.files.length > 0) {
+                const file = input.files[0];
+                // Cek ukuran file (maks 1 MB)
+                if (file.size > 1 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 1 MB. File Anda: ' + (file.size / 1024 / 1024).toFixed(2) + ' MB');
+                    input.value = '';
+                    target.textContent = 'Belum ada file dipilih';
+                    wrapper.classList.remove('uploaded'); // Hapus warna hijau
+                    return;
+                }
+                
+                target.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+                
+                // TAMBAHKAN CLASS HIJAU
+                wrapper.classList.add('uploaded');
+            } else {
+                target.textContent = 'Belum ada file dipilih';
+                wrapper.classList.remove('uploaded'); // Hapus warna hijau
+            }
+        }
+
+        // --- HANDLE SUBMIT ---
+        // 👇👇 GANTI DENGAN URL WEB APP MILIK ANDA YANG ASLI 👇👇
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxgzcvqmo83AvBZONjFVjbynm-RAp8iF9X7kWKu9l0YiSwAP-R_-uRX2U919TGkbMD1/exec";
+
+        // --- HANDLE SUBMIT ---
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            btn.disabled = true;
+
+            // Ambil file
+            const files = {
+                surat: document.getElementById('suratFile').files[0],
+                ktp: document.getElementById('ktpFile').files[0],
+                npwp: document.getElementById('npwpFile').files[0],
+                foto: document.getElementById('fotoFile').files[0]
+            };
+
+            try {
+                // Baca semua file ke base64 menggunakan Promise.all
+                const [suratData, ktpData, npwpData, fotoData] = await Promise.all([
+                    readFileBase64(files.surat),
+                    readFileBase64(files.ktp),
+                    readFileBase64(files.npwp),
+                    readFileBase64(files.foto)
+                ]);
+
+                // Siapkan data payload
+                const formData = {
+                    tanggal: document.getElementById('tanggalOtomatis').value,
+                    nama: document.getElementById('nama').value,
+                    nik: document.getElementById('nik').value,
+                    alamat: document.getElementById('alamat').value,
+                    telepon: document.getElementById('telepon').value,
+                    email: document.getElementById('email').value,
+                    informasi: document.getElementById('informasi').value,
+                    alasan: document.getElementById('alasan').value,
+                    fileSurat: suratData,
+                    fileKtp: ktpData,
+                    fileNpwp: npwpData,
+                    fileFoto: fotoData,
+                    namaSurat: files.surat.name,
+                    namaKtp: files.ktp.name,
+                    namaNpwp: files.npwp.name,
+                    namaFoto: files.foto.name
+                };
+
+                // Kirim ke Google Apps Script via POST
+                const response = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'simpanPPIDB',
+                        payload: formData
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                });
+
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Permohonan Terkirim!';
+                    btn.style.background = '#4CAF50';
+                    document.getElementById('formPPIDB').reset();
+                    
+                    // Reset nama file dan hapus efek kotak hijau
+                    ['suratName','ktpName','npwpName','fotoName'].forEach(id => {
+                        document.getElementById(id).textContent = 'Belum ada file dipilih';
+                        document.getElementById(id).closest('.file-upload-wrapper').classList.remove('uploaded');
+                    });
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                        // Redirect ke index lokal
+                        window.location.href = "index.html";
+                    }, 2500);
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (err) {
+                alert('Gagal: ' + err.message);
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+
+        // --- Helper: Baca file ke base64 (DATA URL LENGKAP) ---
+        function readFileBase64(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) {
+                    reject(new Error('File tidak ditemukan'));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // KIRIM SELURUH DATA URL (termasuk header)
+                    resolve(e.target.result); 
+                };
+                reader.onerror = function() {
+                    reject(new Error('Gagal membaca file'));
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+</body>
+</html>
