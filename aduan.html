@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan Aduan - Laika BKHIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- WARNA DASAR LAIKA --- */
+        :root {
+            --laika-purple: #6C5CE7;
+            --laika-blue: #2196F3;
+            --laika-green: #4CAF50;
+            --gradient-main: linear-gradient(135deg, var(--laika-purple) 0%, var(--laika-blue) 50%, var(--laika-green) 100%);
+            
+            --bg-body: #f0f4f9; 
+            --text-dark: #1c1c1e; 
+            --text-muted: #86868b;
+            --border-glass: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            min-height: 100vh; background-color: #f0f4f9; color: #1c1c1e;
+            background: url('https://drive.google.com/thumbnail?id=1NhfWcScjAxuuFOoog-N2P54APE8c14xD&sz=w2000') no-repeat center 15% / cover;
+            background-size: cover; position: relative; overflow-y: auto; padding: 40px 20px;
+        }
+
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 0;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .page-container {
+            position: relative; z-index: 2; max-width: 800px; margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;
+        }
+        
+        .page-title { 
+            font-size: 28px; font-weight: 700; 
+            background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .back-home-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-glass);
+            padding: 8px 20px; border-radius: 50px;
+            font-weight: 600; font-size: 13px; color: var(--text-dark);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s; 
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .back-home-btn:hover { 
+            background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); 
+            border-color: var(--laika-purple);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            border-radius: 28px; padding: 30px; margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover { box-shadow: 0 20px 60px rgba(108, 92, 231, 0.05); }
+
+        .section-title {
+            font-size: 18px; font-weight: 700; color: var(--text-dark);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
+        .section-title .num {
+            display: flex; justify-content: center; align-items: center;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--laika-purple); color: white; font-size: 14px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 6px; }
+        .form-label .required { color: #ff3b30; }
+
+        .form-control {
+            width: 100%; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 16px; font-size: 14px; transition: 0.3s; outline: none;
+            background: rgba(255,255,255,0.7); font-family: 'Poppins';
+        }
+        .form-control:focus { border-color: var(--laika-purple); background: white; box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); }
+
+        textarea.form-control { resize: vertical; min-height: 100px; }
+
+        /* --- BUTTON SUBMIT --- */
+        .btn-submit {
+            width: 100%; background: var(--gradient-main); color: white;
+            border: none; padding: 16px; border-radius: 16px; font-weight: 700;
+            font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(108, 92, 231, 0.4); }
+        .btn-submit:disabled { opacity: 0.7; transform: none; cursor: not-allowed; }
+
+        @media (max-width: 768px) {
+            body { padding: 20px 10px; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .page-title { font-size: 24px; }
+            .glass-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-bullhorn" style="color: var(--laika-purple); -webkit-text-fill-color: var(--laika-purple);"></i> Layanan Aduan Masyarakat</h1>
+            <a href="index.html" class="back-home-btn">
+                <i class="fas fa-home"></i> Kembali ke Beranda
+            </a>
+        </div>
+
+        <form id="formAduan" onsubmit="handleSubmit(event)">
+            
+            <div class="glass-card">
+                <div class="section-title">
+                    <span class="num"><i class="fas fa-user"></i></span> Data Pelapor
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tanggal Pengisian</label>
+                    <input type="text" id="tanggalOtomatis" class="form-control" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap <span class="required">*</span></label>
+                    <input type="text" id="nama" class="form-control" placeholder="Masukkan nama lengkap Anda" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">NIK <span class="required">*</span></label>
+                    <input type="text" id="nik" class="form-control" placeholder="Nomor Induk Kependudukan (16 digit)" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">E-Mail <span class="required">*</span></label>
+                    <input type="email" id="email" class="form-control" placeholder="email@contoh.com" required>
+                </div>
+            </div>
+
+            <!-- BAGIAN KELUHAN -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span class="num" style="background: var(--laika-blue);">2</span> Detail Aduan
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Keluhan <span class="required">*</span></label>
+                    <textarea id="keluhan" class="form-control" placeholder="Tuliskan keluhan, saran, atau kritik Anda secara lengkap" required></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Waktu Kejadian <span class="required">*</span></label>
+                    <input type="datetime-local" id="waktuKejadian" class="form-control" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                <i class="fas fa-paper-plane"></i> Kirim Aduan
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // --- SET TANGGAL OTOMATIS ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('tanggalOtomatis').value = today.toLocaleDateString('id-ID', options);
+        });
+
+        // --- HANDLE SUBMIT ---
+        // 👇👇 GANTI DENGAN URL WEB APP MILIK ANDA YANG ASLI 👇👇
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxgzcvqmo83AvBZONjFVjbynm-RAp8iF9X7kWKu9l0YiSwAP-R_-uRX2U919TGkbMD1/exec";
+
+        // --- HANDLE SUBMIT ---
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            btn.disabled = true;
+
+            const formData = {
+                tanggal: document.getElementById('tanggalOtomatis').value,
+                nama: document.getElementById('nama').value,
+                nik: document.getElementById('nik').value,
+                email: document.getElementById('email').value,
+                keluhan: document.getElementById('keluhan').value,
+                waktuKejadian: document.getElementById('waktuKejadian').value
+            };
+
+            try {
+                // Mengirim data ke Google Apps Script via POST
+                const response = await fetch(GAS_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'simpanAduan',
+                        payload: formData
+                    }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                });
+
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Aduan Terkirim!';
+                    btn.style.background = '#4CAF50';
+                    document.getElementById('formAduan').reset();
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                        // Kembali ke beranda setelah sukses
+                        window.location.href = "index.html";
+                    }, 2500);
+                } else {
+                    throw new Error(res.message);
+                }
+            } catch (err) {
+                alert('Terjadi kesalahan: ' + err.message);
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
