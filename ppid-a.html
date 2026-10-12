@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- LIBRARY KOMPRES GAMBAR -->
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     
     <style>
         :root {
@@ -104,7 +106,6 @@
 
         textarea.form-control { resize: vertical; min-height: 80px; }
 
-        /* --- File upload styling --- */
         .file-upload-wrapper {
             border: 2px dashed rgba(0,0,0,0.15);
             border-radius: 16px;
@@ -144,7 +145,6 @@
             .glass-card { padding: 20px; }
         }
 
-       /* --- TAMBAHAN CSS: UPLOAD BERHASIL (WARNA HIJAU) --- */
         .file-upload-wrapper.uploaded {
             border-color: #4CAF50 !important;
             background: rgba(76, 175, 80, 0.08) !important;
@@ -229,7 +229,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Akta Badan Hukum <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 3 MB)</span></label>
+                    <label class="form-label">Akta Badan Hukum <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 5 MB)</span></label>
                     <div class="file-upload-wrapper" id="wrap-akta">
                         <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
                         <span style="font-size:13px; font-weight:500;">Klik atau seret file</span>
@@ -239,7 +239,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Surat Permohonan <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 1 MB)</span></label>
+                    <label class="form-label">Surat Permohonan <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 5 MB)</span></label>
                     <div class="file-upload-wrapper" id="wrap-surat">
                         <div class="file-icon"><i class="fas fa-file-pdf"></i></div>
                         <span style="font-size:13px; font-weight:500;">Klik atau seret file</span>
@@ -249,7 +249,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">KTP Pemohon <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 1 MB)</span></label>
+                    <label class="form-label">KTP Pemohon <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 5 MB)</span></label>
                     <div class="file-upload-wrapper" id="wrap-ktp">
                         <div class="file-icon"><i class="fas fa-id-card"></i></div>
                         <span style="font-size:13px; font-weight:500;">Klik atau seret file</span>
@@ -259,7 +259,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">NPWP / Surat Kuasa / SPT <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 1 MB)</span></label>
+                    <label class="form-label">NPWP / Surat Kuasa / SPT <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 5 MB)</span></label>
                     <div class="file-upload-wrapper" id="wrap-npwp">
                         <div class="file-icon"><i class="fas fa-file-invoice"></i></div>
                         <span style="font-size:13px; font-weight:500;">Klik atau seret file</span>
@@ -269,7 +269,7 @@
                 </div>
 
                 <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">Foto 4x6 <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 1 MB)</span></label>
+                    <label class="form-label">Foto 4x6 <span class="required">*</span> <span style="font-size:12px; color:var(--text-muted);">(Maks 5 MB)</span></label>
                     <div class="file-upload-wrapper" id="wrap-foto">
                         <div class="file-icon"><i class="fas fa-camera"></i></div>
                         <span style="font-size:13px; font-weight:500;">Klik atau seret file</span>
@@ -286,34 +286,34 @@
     </div>
 
     <script>
+        // ==========================================================
+        // ⚠️ GANTI URL DI BAWAH INI DENGAN URL WEB APP ANDA YANG ASLI
+        // ==========================================================
+        const GAS_API_URL = "https://script.google.com/macros/s/ID_WEB_APP_ANDA_YANG_ASLI/exec";
+        // ==========================================================
+
         // Helper: update nama file & tambahkan efek hijau
         function updateFileName(input, targetId) {
             const nameDisplay = document.getElementById(targetId);
-            // Cari elemen wrapper pembungkus
             const wrapper = input.closest('.file-upload-wrapper');
 
             if (input.files && input.files.length > 0) {
                 const file = input.files[0];
-                
-                // Validasi ukuran file (maks 3 MB untuk akta, sisanya 1 MB)
-                const maxSize = input.id === 'akta' ? 3 * 1024 * 1024 : 1 * 1024 * 1024;
+                const maxSize = 5 * 1024 * 1024; // 5 MB
                 
                 if (file.size > maxSize) {
-                    alert('Ukuran file terlalu besar. Maksimal ' + (maxSize / 1024 / 1024) + ' MB.');
+                    alert('Ukuran file terlalu besar. Maksimal 5 MB.');
                     input.value = '';
                     nameDisplay.textContent = 'Belum ada file';
-                    wrapper.classList.remove('uploaded'); // Hapus warna hijau
+                    wrapper.classList.remove('uploaded');
                     return;
                 }
 
-                // Update teks nama file
                 nameDisplay.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-                
-                // TAMBAHKAN CLASS HIJAU
                 wrapper.classList.add('uploaded');
             } else {
                 nameDisplay.textContent = 'Belum ada file';
-                wrapper.classList.remove('uploaded'); // Hapus warna hijau jika kosong
+                wrapper.classList.remove('uploaded');
             }
         }
 
@@ -327,11 +327,29 @@
             });
         }
 
+        // Kompres gambar (hanya untuk file image)
+        async function compressImage(file) {
+            if (!file.type.startsWith('image/')) return file;
+            try {
+                const options = {
+                    maxSizeMB: 0.3,        // Target maks 300 KB
+                    maxWidthOrHeight: 1600, // Resolusi maksimal
+                    useWebWorker: true
+                };
+                const compressed = await imageCompression(file, options);
+                console.log(`Kompresi: ${(file.size/1024).toFixed(1)} KB → ${(compressed.size/1024).toFixed(1)} KB`);
+                return compressed;
+            } catch (err) {
+                console.warn("Gagal kompres, pakai file asli:", err);
+                return file;
+            }
+        }
+
         async function handleSubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
             btn.disabled = true;
 
             // Ambil data teks
@@ -346,36 +364,40 @@
                 alasan: document.getElementById('alasan').value
             };
 
-            // Ambil file
+            // Ambil dan kompres file
             const fileIds = ['akta', 'surat', 'ktp', 'npwp', 'foto'];
             const fileData = {};
+            
             try {
                 for (const id of fileIds) {
                     const input = document.getElementById(id);
                     if (input.files && input.files.length > 0) {
-                        const file = input.files[0];
+                        let file = input.files[0];
+                        
+                        // Tampilkan status kompres
+                        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Kompres ${id}...`;
+                        
+                        // Kompres jika itu gambar
+                        file = await compressImage(file);
+                        
+                        // Validasi setelah kompres
+                        if (file.size > 5 * 1024 * 1024) {
+                            throw new Error(`File ${id} terlalu besar setelah dikompres. Maks 5 MB.`);
+                        }
+
                         const base64 = await fileToBase64(file);
                         fileData[id] = {
                             name: file.name,
                             data: base64
                         };
                     } else {
-                        throw new Error('File ' + id + ' wajib diupload.');
+                        throw new Error(`File ${id} wajib diupload.`);
                     }
                 }
-            } catch (err) {
-                alert(err.message);
-                btn.innerHTML = originalHTML;
-                btn.disabled = false;
-                return;
-            }
 
-            // Kirim ke server
-            // 👇👇 GANTI DENGAN URL WEB APP MILIK ANDA YANG ASLI 👇👇
-            const GAS_API_URL = "https://script.google.com/macros/s/ID_WEB_APP_ANDA_YANG_ASLI/exec";
+                // Semua file siap, mulai kirim
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim ke server...';
 
-            try {
-                // 1. Siapkan payload yang membundel semua teks dan file
                 const payload = {
                     nama: data.nama, nik: data.nik, alamat: data.alamat, telepon: data.telepon, email: data.email,
                     pengguna: data.pengguna, informasi: data.informasi, alasan: data.alasan,
@@ -386,25 +408,29 @@
                     fotoData: fileData.foto.data, fotoName: fileData.foto.name
                 };
 
-                // 2. Kirim ke Google Apps Script via POST
+                // Kirim ke GAS
                 const response = await fetch(GAS_API_URL, {
                     method: 'POST',
                     body: JSON.stringify({
                         action: 'simpanPPIDA',
                         payload: payload
                     }),
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow'
                 });
+
+                // Cek status HTTP
+                if (!response.ok) {
+                    throw new Error(`Server merespons dengan kode ${response.status}. Coba lagi atau hubungi admin.`);
+                }
 
                 const res = await response.json();
 
-                // 3. Tangani Respon
                 if (res.status === 'success') {
                     btn.innerHTML = '<i class="fas fa-check-circle"></i> Permohonan Terkirim!';
                     btn.style.background = '#4CAF50';
                     document.getElementById('formPPIDA').reset();
                     
-                    // Reset status file (hapus warna hijau & kembalikan teks asli)
                     ['akta','surat','ktp','npwp','foto'].forEach(id => {
                         document.getElementById('name-' + id).textContent = 'Belum ada file';
                         document.getElementById(id).closest('.file-upload-wrapper').classList.remove('uploaded');
@@ -414,18 +440,25 @@
                         btn.innerHTML = originalHTML;
                         btn.style.background = '';
                         btn.disabled = false;
-                        // Redirect ke index HTML lokal
                         window.location.href = "index.html"; 
                     }, 3000);
                 } else {
-                    throw new Error(res.message);
+                    throw new Error(res.message || 'Server menolak permohonan.');
                 }
+
             } catch (err) {
-                alert('Gagal: ' + err.message);
+                console.error("Detail Error:", err);
+                
+                let pesan = err.message;
+                if (err.name === 'TypeError' && err.message.includes('fetch')) {
+                    pesan = "Tidak dapat terhubung ke server. Periksa koneksi internet Anda atau coba beberapa saat lagi.";
+                }
+                
+                alert('Gagal: ' + pesan);
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }
-        } // <--- PASTIKAN ADA KURUNG KURAWAL INI UNTUK MENUTUP FUNGSI handleSubmit
+        }
     </script>
 </body>
 </html>
