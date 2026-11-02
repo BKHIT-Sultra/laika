@@ -1979,7 +1979,7 @@
                     <td><span class="badge ${getStatusClass(statusAkhir)}">${getStatusLabel(statusAkhir)}</span></td>
                     <td><div class="respon-timeline">${tl}</div></td>
                     <td class="action-btns">
-                        <button class="btn-reply" onclick="openRespon('ppid',${item.id})"><i class="fas fa-reply"></i></button>
+                        <button class="btn-reply" onclick="openRespon('ppid', '${item.id}')"><i class="fas fa-reply"></i></button>
                         <button class="btn-view" onclick="lihatDetailPPID(${item.id})"><i class="fas fa-eye"></i></button>
                     </td>
                 </tr>`;
@@ -2043,7 +2043,7 @@
                     <td><span class="badge ${getStatusClass(item.status)}">${getStatusLabel(item.status)}</span></td>
                     <td><div class="respon-timeline">${tl}</div></td>
                     <td class="action-btns">
-                        <button class="btn-reply" onclick="openRespon('aduan',${item.id})"><i class="fas fa-reply"></i></button>
+                        <button class="btn-reply" onclick="openRespon('aduan', '${item.id}')"><i class="fas fa-reply"></i></button>
                         <!-- Tampilan aduan cukup via modal respon atau bisa ditambah fungsi lihatDetailAduan serupa -->
                     </td>
                 </tr>`;
@@ -2082,6 +2082,24 @@
                 alert('Gagal: ' + err.message);
                 btn.innerHTML = o; btn.style.background = ''; btn.style.opacity = '1';
             }
+        }
+
+        function openRespon(type, id) {
+            document.getElementById('responId').value = id;
+            document.getElementById('responType').value = type;
+            document.getElementById('responStatus').value = 'diproses'; // Default status
+            document.getElementById('responKeterangan').value = ''; // Reset form input
+        
+            // Ubah judul modal sesuai tipe
+            const title = document.getElementById('responModalTitle');
+            if (type === 'ppid') {
+                title.textContent = 'Respons Permohonan PPID';
+            } else if (type === 'aduan') {
+                title.textContent = 'Respons Aduan Masyarakat';
+            }
+        
+            // Panggil modal
+            openModal('modalRespon');
         }
     
         // ==========================================
